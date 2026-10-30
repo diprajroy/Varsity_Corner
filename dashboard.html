@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="bn">
+
+<head>
+    <meta charset="utf-8">
+    <title>দোকান ড্যাশবোর্ড | ভার্সিটি কর্নার</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@500;600;700&display=swap" rel="stylesheet">
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- jsPDF & AutoTable for direct Client-Side PDF Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Hind Siliguri', sans-serif;
+        }
+
+        body {
+            background: #f1f5f9;
+            margin: 0;
+            padding: 20px;
+            color: #0f172a;
+        }
+
+        /* Lock Screen */
+        #lockScreen {
+            position: fixed;
+            inset: 0;
+            background: #0f172a;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .lock-box {
+            background: #1e293b;
+            border: 1px solid #334155;
+            padding: 32px 24px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 320px;
+            text-align: center;
+            color: #f8fafc;
+        }
+
+        .pin-input {
+            width: 140px;
+            height: 50px;
+            text-align: center;
+            font-size: 26px;
+            letter-spacing: 10px;
+            border: 2px solid #475569;
+            border-radius: 10px;
+            background: #0f172a;
+            color: #38bdf8;
+            outline: none;
+            margin-bottom: 12px;
+        }
+
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .keypad button {
+            height: 48px;
+            font-size: 20px;
+            font-weight: 700;
+            border-radius: 10px;
+            border: 1px solid #334155;
+            background: #0f172a;
+            color: #f8fafc;
+            cursor: pointer;
+        }
+
+        /* Dashboard Header */
+        .header {
+            max-width: 1000px;
+            margin: 0 auto 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .header-btns {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-shift {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            transition: transform .1s;
+        }
+
+        .btn-shift:active {
+            transform: scale(0.97);
+        }
+
+        .btn-shift:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-day-end {
+            background: #b91c1c;
+            color: #fff;
+        }
+
+        .live-dot {
+            background: #22c55e;
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        /* Filter Tabs */
+        .dash-tabs {
+            display: flex;
+            gap: 10px;
+            max-width: 1000px;
+            margin: 0 auto 16px;
+        }
+
+        .dash-tab {
+            padding: 10px 18px;
+            border-radius: 10px;
+            border: 1.5px solid #cbd5e1;
+            background: #fff;
+            color: #475569;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all .15s ease;
+        }
+
+        .dash-tab.active {
+            background: #0f172a;
+            color: #fff;
+            border-color: #0f172a;
+        }
+
+        .tab-badge {
+            background: #e2e8f0;
+            color: #0f172a;
+            font-size: 12px;
+            padding: 1px 8px;
+            border-radius: 12px;
+            font-weight: 700;
+        }
+
+        .dash-tab.active .tab-badge {
+            background: #38bdf8;
+            color: #0f172a;
+        }
+
+        /* Orders Container */
+        .grid {
+            display: grid;
+            gap: 14px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 14px;
+            padding: 16px;
+            border: 1.5px solid #cbd5e1;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04);
+        }
+
+        .card.waiting {
+            border-color: #f59e0b;
+            background: #fffdf5;
+        }
+
+        .card.progressing {
+            border-color: #3b82f6;
+            background: #f0f7ff;
+        }
+
+        .card.ready {
+            border-color: #16a34a;
+            background: #fcfdfd;
+        }
+
+        .top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 8px;
+            margin-bottom: 10px;
+        }
+
+        .order-code-badge {
+            font-size: 14px;
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-weight: 700;
+            margin-right: 6px;
+        }
+
+        .customer-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .customer-phone {
+            color: #0284c7;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .file-tag {
+            background: #e2e8f0;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 13px;
+            display: inline-block;
+            margin: 2px 4px 2px 0;
+            word-break: break-all;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 14px;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            padding: 12px 18px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: opacity 0.15s;
+        }
+
+        .btn-action:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-download {
+            background: #0284c7;
+            color: #fff;
+        }
+
+        .btn-ready {
+            background: #16a34a;
+            color: #fff;
+        }
+
+        .btn-revert {
+            background: #64748b;
+            color: #fff;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Lock Screen -->
+    <div id="lockScreen">
+        <div class="lock-box">
+            <h2 style="margin: 0 0 6px;">🔒 ড্যাশবোর্ড লক</h2>
+            <p style="margin: 0 0 16px; color: #94a3b8; font-size: 14px;">পিন দিয়ে আনলক করুন (ডিফল্ট: 1234)</p>
+            <input type="password" id="pinInput" class="pin-input" maxlength="4" readonly placeholder="••••">
+            <div id="pinErr" style="color: #f87171; font-size: 13px; min-height: 18px;"></div>
+            <div class="keypad">
+                <button onclick="press('1')">1</button><button onclick="press('2')">2</button><button
+                    onclick="press('3')">3</button>
+                <button onclick="press('4')">4</button><button onclick="press('5')">5</button><button
+                    onclick="press('6')">6</button>
+                <button onclick="press('7')">7</button><button onclick="press('8')">8</button><button
+                    onclick="press('9')">9</button>
+                <button onclick="clearPin()">C</button><button onclick="press('0')">0</button><button
+                    onclick="backspace()">⌫</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Main Content -->
+    <div id="dashboardApp" class="hidden">
+        <div class="header">
+            <div>
+                <h1 style="margin:0; font-size:24px;">ভার্সিটি কর্নার | অর্ডার ম্যানেজমেন্ট</h1>
+                <small style="color:#64748b;">নতুন অর্ডার এলে অডিও অ্যালার্ট বাজবে</small>
+            </div>
+            <div class="header-btns">
+                <span class="live-dot">● লাইভ</span>
+                <button id="dayEndBtn" class="btn-shift btn-day-end" onclick="triggerDayEnd()">🛑 Day End (রিপোর্ট ও ডিলিট)</button>
+            </div>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="dash-tabs">
+            <button type="button" id="tabActive" class="dash-tab active" onclick="setDashboardTab('active')">
+                ⏳ চলমান কাজ <span id="activeCount" class="tab-badge">0</span>
+            </button>
+            <button type="button" id="tabCompleted" class="dash-tab" onclick="setDashboardTab('completed')">
+                ✅ সম্পন্ন / ডেলিভারি প্রস্তুত <span id="completedCount" class="tab-badge">0</span>
+            </button>
+        </div>
+
+        <div class="grid" id="ordersList">
+            <div
+                style="text-align: center; color: #64748b; font-size: 16px; padding: 40px; background: #fff; border-radius: 12px;">
+                লোড হচ্ছে...</div>
+        </div>
+    </div>
+
+    <audio id="beepSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"
+        preload="auto"></audio>
+
+    <script>
+        const DASHBOARD_PIN = "1234";
+        const SUPABASE_URL = "https://sdayhzqgcchjtmdljxnl.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_kCsTPa5LB3NbLe79UDl_Qw_StUTruit";
+        let client = null;
+        let allTodayOrders = [];
+        let currentOrdersMap = {};
+        let currentTab = "active"; // "active" or "completed"
+
+        // Sound alert helper
+        function playAlertSound() {
+            try {
+                const audio = document.getElementById('beepSound');
+                if (audio) {
+                    audio.currentTime = 0;
+                    audio.play().catch(() => playSynthBeep());
+                } else {
+                    playSynthBeep();
+                }
+            } catch (_) {
+                playSynthBeep();
+            }
+        }
+
+        // Web Audio synthesized chime fallback
+        function playSynthBeep() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(880, ctx.currentTime);
+                gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.5);
+            } catch (_) {}
+        }
+
+        // Helper: Extract & format human-friendly daily order code (e.g. 31-10-001)
+        function getOrderCode(order, fallbackIdx) {
+            if (order.order_code) return String(order.order_code);
+            const match = (order.instructions || '').match(/\[অর্ডার:\s*([\d-]+)\]/i);
+            if (match) return match[1];
+
+            const dt = order.created_at ? new Date(order.created_at) : new Date();
+            const d = String(dt.getDate()).padStart(2, '0');
+            const m = String(dt.getMonth() + 1).padStart(2, '0');
+            if (typeof fallbackIdx === 'number') {
+                return `${d}-${m}-${String(fallbackIdx).padStart(3, '0')}`;
+            }
+            return `${d}-${m}-${(order.id || '').substring(0, 4).toUpperCase()}`;
+        }
+
+        // Helper: Price Extraction & Encoding
+        function getOrderPrice(order) {
+            if (order.price) return String(order.price);
+            if (order.bill) return String(order.bill);
+            if (order.amount) return String(order.amount);
+            const match = (order.instructions || '').match(/\[(?:বিল|মূল্য|দাম|price|bill):\s*৳?\s*(\d+(?:\.\d+)?)\s*(?:টাকা)?\]/i);
+            return match ? match[1] : '';
+        }
+
+        function cleanInstructions(instr) {
+            if (!instr) return '';
+            return instr
+                .replace(/\[(?:বিল|মূল্য|দাম|price|bill):\s*৳?\s*\d+(?:\.\d+)?\s*(?:টাকা)?\]/gi, '')
+                .replace(/\[অর্ডার:\s*[\d-]+\]/gi, '')
+                .trim();
+        }
+
+        function attachPriceToInstructions(instr, price) {
+            const clean = cleanInstructions(instr);
+            const codeMatch = (instr || '').match(/\[অর্ডার:\s*([\d-]+)\]/i);
+            const codeTag = codeMatch ? `[অর্ডার: ${codeMatch[1]}]` : '';
+
+            let res = clean;
+            if (codeTag) res = res ? `${res}\n${codeTag}` : codeTag;
+            if (price) res = res ? `${res}\n[বিল: ৳${price}]` : `[বিল: ৳${price}]`;
+            return res;
+        }
+
+        // PIN Pad logic
+        let cur = "";
+        function press(n) {
+            if (cur.length < 4) {
+                cur += n;
+                document.getElementById('pinInput').value = cur;
+                if (cur.length === 4) verify();
+            }
+        }
+        function clearPin() { cur = ""; document.getElementById('pinInput').value = ""; document.getElementById('pinErr').innerText = ""; }
+        function backspace() { cur = cur.slice(0, -1); document.getElementById('pinInput').value = cur; }
+        function verify() {
+            if (cur === DASHBOARD_PIN) {
+                sessionStorage.setItem("dash_logged", "1");
+                document.getElementById('lockScreen').classList.add('hidden');
+                document.getElementById('dashboardApp').classList.remove('hidden');
+                initDashboard();
+            } else {
+                document.getElementById('pinErr').innerText = "ভুল পিন! আবার দিন";
+                clearPin();
+            }
+        }
+
+        // Physical Keyboard listener for desktop/laptop
+        window.addEventListener('keydown', (e) => {
+            if (sessionStorage.getItem("dash_logged") === "1") return;
+            if (e.key >= '0' && e.key <= '9') {
+                press(e.key);
+            } else if (e.key === 'Backspace') {
+                backspace();
+            } else if (e.key === 'Escape' || e.key.toLowerCase() === 'c') {
+                clearPin();
+            } else if (e.key === 'Enter' && cur.length === 4) {
+                verify();
+            }
+        });
+
+        if (sessionStorage.getItem("dash_logged") === "1") {
+            document.getElementById('lockScreen').classList.add('hidden');
+            document.getElementById('dashboardApp').classList.remove('hidden');
+            initDashboard();
+        }
+
+        function initDashboard() {
+            if (client) return;
+            client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            loadOrders();
+
+            client.channel('orders-realtime')
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, (payload) => {
+                    if (payload.eventType === 'INSERT') {
+                        playAlertSound();
+                    }
+                    loadOrders();
+                })
+                .subscribe();
+        }
+
+        // Tab switcher
+        function setDashboardTab(tab) {
+            currentTab = tab;
+            document.getElementById('tabActive').classList.toggle('active', tab === 'active');
+            document.getElementById('tabCompleted').classList.toggle('active', tab === 'completed');
+            renderOrders();
+        }
+
+        // Load all today's orders
+        async function loadOrders() {
+            try {
+                const { data, error } = await client
+                    .from('orders')
+                    .select('*')
+                    .order('created_at', { ascending: true }); // chronological order for clean sequence indexing
+
+                if (error) {
+                    console.error("Orders fetch error:", error);
+                    document.getElementById('ordersList').innerHTML = `<div style="text-align: center; color: #b91c1c; font-size: 16px; padding: 30px; background: #fff; border-radius: 12px;">অর্ডার লোড করতে সমস্যা হয়েছে: ${error.message}</div>`;
+                    return;
+                }
+
+                allTodayOrders = (data || []).map((o, idx) => {
+                    o._code = getOrderCode(o, idx + 1);
+                    return o;
+                });
+
+                currentOrdersMap = {};
+                allTodayOrders.forEach(o => { currentOrdersMap[o.id] = o; });
+
+                // Update tab counts
+                const activeOrders = allTodayOrders.filter(o => o.status !== 'ready');
+                const completedOrders = allTodayOrders.filter(o => o.status === 'ready');
+
+                document.getElementById('activeCount').innerText = activeOrders.length;
+                document.getElementById('completedCount').innerText = completedOrders.length;
+
+                renderOrders();
+            } catch (err) {
+                console.error("loadOrders exception:", err);
+            }
+        }
+
+        function renderOrders() {
+            const box = document.getElementById('ordersList');
+
+            // Sort orders descending for display so newest is on top
+            const sorted = [...allTodayOrders].reverse();
+            const listToRender = currentTab === 'active'
+                ? sorted.filter(o => o.status !== 'ready')
+                : sorted.filter(o => o.status === 'ready');
+
+            if (listToRender.length === 0) {
+                const emptyMsg = currentTab === 'active'
+                    ? "বর্তমানে কোনো চলমান অর্ডার নেই।"
+                    : "আজকে এখনও কোনো সম্পন্ন অর্ডার নেই।";
+                box.innerHTML = `<div style="text-align: center; color: #64748b; font-size: 17px; padding: 40px; background: #fff; border-radius: 12px;">${emptyMsg}</div>`;
+                return;
+            }
+
+            box.innerHTML = listToRender.map(o => {
+                const isWaiting = o.status === 'waiting';
+                const isProgressing = o.status === 'progressing';
+                const isReady = o.status === 'ready';
+
+                const fileNames = (o.files || []).map(f => `<span class="file-tag">📄 ${escapeHtml(f.name)}</span>`).join(' ');
+                const pageTxt = o.page_range && o.page_range !== '-' ? ` | <strong>পেজ:</strong> ${escapeHtml(o.page_range)}` : '';
+                const sideTxt = o.side ? ` | <strong>পিঠ:</strong> ${escapeHtml(o.side)}` : '';
+                const bindingVal = o.binding || (Array.isArray(o.extras) ? o.extras.join(', ') : '');
+                const bindingTxt = bindingVal && bindingVal !== 'নেই' ? `<br>• <strong>বাইন্ডিং ও কভার:</strong> ${escapeHtml(bindingVal)}` : '';
+                const cleanInstr = cleanInstructions(o.instructions);
+                const instrTxt = cleanInstr ? `<br>• <strong>নির্দেশনা:</strong> <span style="color:#b91c1c;">${escapeHtml(cleanInstr)}</span>` : '';
+                const currentPrice = getOrderPrice(o);
+
+                let statusLabel = `<strong style="color: #d97706">⏳ অপেক্ষারত</strong>`;
+                if (isProgressing) statusLabel = `<strong style="color: #2563eb">⚙️ প্রিন্ট চলছে</strong>`;
+                if (isReady) statusLabel = `<strong style="color: #16a34a">🎉 প্রস্তুত (Ready)</strong>`;
+
+                let timeStr = "";
+                try {
+                    const dt = new Date(o.created_at);
+                    timeStr = dt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                } catch (_) { }
+
+                return `
+          <div class="card ${escapeHtml(o.status)}">
+            <div class="top-row">
+              <div>
+                <span class="order-code-badge">#${escapeHtml(o._code)}</span> 
+                <span class="customer-title">${escapeHtml(o.customer_name || 'নাম নেই')}</span> 
+                (<a class="customer-phone" href="tel:${escapeHtml(o.phone || '')}">${escapeHtml(o.phone || '')}</a>)
+                ${timeStr ? `<small style="color:#94a3b8; margin-left:6px;">${timeStr}</small>` : ''}
+              </div>
+              <div>${statusLabel}</div>
+            </div>
+
+            <div style="font-size: 15px; line-height: 1.6; margin-bottom: 8px;">
+              • <strong>ধরন:</strong> ${escapeHtml(o.print_type || 'প্রিন্ট')} | <strong>কপি:</strong> ${o.copies || 1} সেট${pageTxt}${sideTxt}${bindingTxt}${instrTxt}
+            </div>
+
+            <div><strong>ফাইল তালিকা:</strong><br>${fileNames || '<em style="color:#94a3b8">ফাইল নামানো হয়েছে</em>'}</div>
+
+            <!-- Price/Bill Row -->
+            <div style="margin-top: 12px; padding: 10px 14px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 10px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                <label for="price_${escapeHtml(o.id)}" style="font-weight: 700; font-size: 14px; color: #334155;">
+                  💵 মোট দাম/বিল:
+                </label>
+                <div style="display: flex; gap: 6px; align-items: center;">
+                  <span style="font-weight: 700; color: #64748b;">৳</span>
+                  <input type="number" id="price_${escapeHtml(o.id)}" min="0" placeholder="টাকা (ঐচ্ছিক)" 
+                    value="${escapeHtml(currentPrice)}" 
+                    style="width: 120px; height: 38px; border: 1.5px solid #cbd5e1; border-radius: 8px; padding: 0 8px; font-weight: 700; font-size: 15px; color: #047857; outline: none;">
+                  <button type="button" onclick="saveOnlyPrice('${escapeHtml(o.id)}', this)" 
+                    style="height: 38px; padding: 0 12px; background: #0f172a; color: #fff; border: none; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer;">
+                    💾 দাম সেভ
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="actions">
+              ${isWaiting ? `
+                <button class="btn-action btn-download" onclick="downloadAndWipe('${escapeHtml(o.id)}', this)">
+                  📥 ফাইল নামান ও প্রিন্ট শুরু করুন
+                </button>
+              ` : ''}
+              
+              ${isProgressing ? `
+                <button class="btn-action btn-ready" onclick="markReady('${escapeHtml(o.id)}', this)">
+                  ✅ প্রিন্ট শেষ (Ready)
+                </button>
+              ` : ''}
+
+              ${isReady ? `
+                <button class="btn-action btn-revert" onclick="revertToProgressing('${escapeHtml(o.id)}', this)">
+                  ↩️ রানিংয়ে ফেরত নিন
+                </button>
+              ` : ''}
+            </div>
+          </div>
+        `;
+            }).join('');
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        // Helper: Update price and status with seamless fallback
+        async function updateOrderPriceAndStatus(orderId, newStatus, price) {
+            const order = currentOrdersMap[orderId];
+            const updatePayload = { status: newStatus };
+            if (price !== undefined && price !== '') {
+                updatePayload.price = String(price);
+            }
+
+            const { error } = await client.from('orders').update(updatePayload).eq('id', orderId);
+            if (error && error.message && error.message.toLowerCase().includes('price')) {
+                const newInstr = attachPriceToInstructions(order ? order.instructions : '', price);
+                const { error: fbErr } = await client.from('orders').update({
+                    status: newStatus,
+                    instructions: newInstr
+                }).eq('id', orderId);
+                if (fbErr) throw fbErr;
+            } else if (error) {
+                throw error;
+            }
+        }
+
+        // Save Price only without changing status
+        async function saveOnlyPrice(orderId, btn) {
+            const priceInput = document.getElementById('price_' + orderId);
+            const priceVal = priceInput ? priceInput.value.trim() : '';
+            const order = currentOrdersMap[orderId];
+            if (!order) return;
+
+            const oldText = btn.innerText;
+            btn.disabled = true;
+            btn.innerText = "সেভ হচ্ছে...";
+
+            try {
+                await updateOrderPriceAndStatus(orderId, order.status, priceVal);
+                btn.innerText = "✓ সেভড";
+                setTimeout(() => {
+                    btn.innerText = oldText;
+                    btn.disabled = false;
+                }, 1500);
+            } catch (err) {
+                alert("দাম সেভ করতে ব্যর্থ: " + err.message);
+                btn.innerText = oldText;
+                btn.disabled = false;
+            }
+        }
+
+        // Download files locally and PERMANENTLY remove from Supabase bucket
+        async function downloadAndWipe(orderId, btn) {
+            const order = currentOrdersMap[orderId];
+            if (!order) return;
+            const files = order.files;
+            if (!files || files.length === 0) {
+                alert("কোনো ফাইল পাওয়া যায়নি!");
+                return;
+            }
+
+            if (btn) {
+                btn.disabled = true;
+                btn.innerText = "⏳ ফাইল নামছে...";
+            }
+
+            try {
+                for (let i = 0; i < files.length; i++) {
+                    const f = files[i];
+                    const { data, error } = await client.storage.from('print_docs').download(f.path);
+                    if (error) {
+                        throw new Error(`"${f.name}" ফাইল ডাউনলোড করতে ব্যর্থ: ` + error.message);
+                    }
+                    if (data) {
+                        const blobUrl = URL.createObjectURL(data);
+                        const a = document.createElement('a');
+                        a.href = blobUrl;
+                        a.download = f.name;
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
+                        setTimeout(() => URL.revokeObjectURL(blobUrl), 15000);
+                    }
+                    if (i < files.length - 1) {
+                        await new Promise(r => setTimeout(r, 500));
+                    }
+                }
+
+                // Delete downloaded files from bucket
+                const paths = files.map(f => f.path);
+                await client.storage.from('print_docs').remove(paths);
+
+                // Save price if entered
+                const priceInput = document.getElementById('price_' + orderId);
+                const priceVal = priceInput ? priceInput.value.trim() : '';
+
+                const orderPayload = {
+                    status: 'progressing',
+                    files: []
+                };
+                if (priceVal) orderPayload.price = String(priceVal);
+
+                const { error: updErr } = await client.from('orders').update(orderPayload).eq('id', orderId);
+                if (updErr && updErr.message && updErr.message.toLowerCase().includes('price')) {
+                    const newInstr = attachPriceToInstructions(order ? order.instructions : '', priceVal);
+                    await client.from('orders').update({
+                        status: 'progressing',
+                        files: [],
+                        instructions: newInstr
+                    }).eq('id', orderId);
+                } else if (updErr) {
+                    throw updErr;
+                }
+
+                loadOrders();
+            } catch (err) {
+                console.error("Download error:", err);
+                alert(err.message || "ফাইল ডাউনলোড করতে সমস্যা হয়েছে।");
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerText = "📥 ফাইল নামান ও প্রিন্ট শুরু করুন";
+                }
+            }
+        }
+
+        // Mark Ready with entered price
+        async function markReady(orderId, btn) {
+            if (btn) {
+                btn.disabled = true;
+                btn.innerText = "আপডেট হচ্ছে...";
+            }
+
+            const priceInput = document.getElementById('price_' + orderId);
+            const priceVal = priceInput ? priceInput.value.trim() : '';
+
+            try {
+                await updateOrderPriceAndStatus(orderId, 'ready', priceVal);
+                loadOrders();
+            } catch (err) {
+                alert("স্ট্যাটাস আপডেট করতে সমস্যা হয়েছে: " + err.message);
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerText = "✅ প্রিন্ট শেষ (Ready)";
+                }
+            }
+        }
+
+        // Revert Ready order back to Progressing
+        async function revertToProgressing(orderId, btn) {
+            if (btn) {
+                btn.disabled = true;
+                btn.innerText = "রানিং হচ্ছে...";
+            }
+            try {
+                await updateOrderPriceAndStatus(orderId, 'progressing');
+                loadOrders();
+            } catch (err) {
+                alert("রানিং করতে সমস্যা হয়েছে: " + err.message);
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerText = "↩️ রানিংয়ে ফেরত নিন";
+                }
+            }
+        }
+
+        // Helper: Convert Bengali print type to clean English for Day End PDF
+        function translatePrintTypeToEnglish(str) {
+            if (!str) return 'Print';
+            const s = String(str);
+            if (s.includes('ছবি') || s.toLowerCase().includes('photo')) {
+                return (s.includes('স্ট্যাম্প') || s.toLowerCase().includes('stamp')) ? 'Photo (Stamp)' : 'Photo (Passport)';
+            }
+            const isColor = s.includes('রঙিন') || s.toLowerCase().includes('color');
+            const isBoth = s.includes('এপিঠ ওপিঠ') || s.toLowerCase().includes('both') || s.toLowerCase().includes('double');
+            const type = isColor ? 'Color Print' : 'B&W Print';
+            return isBoth ? `${type} (Both Sides)` : `${type} (Single Side)`;
+        }
+
+        // Helper: Clean non-ASCII characters from names so jsPDF font never breaks
+        function safeAscii(str, phone) {
+            if (!str) return 'Customer';
+            const ascii = str.replace(/[^\x00-\x7F]/g, '').trim();
+            if (ascii.length >= 2) return ascii;
+            const ph = String(phone || '').replace(/[\s-]/g, '');
+            return ph ? ('Customer ' + ph.slice(-4)) : 'Customer';
+        }
+
+        function translateStatusToEnglish(status) {
+            if (!status) return 'Waiting';
+            const s = String(status).toLowerCase();
+            if (s === 'ready') return 'Ready';
+            if (s === 'progressing') return 'In Progress';
+            return 'Waiting';
+        }
+
+        // DAY END FUNCTIONALITY: Generate Report PDF, Download, and Wipe Database
+        async function triggerDayEnd() {
+            const { data: allOrders, error } = await client.from('orders').select('*').order('created_at', { ascending: true });
+
+            if (error) {
+                alert("অর্ডার রেকর্ড লোড করতে সমস্যা হয়েছে: " + error.message);
+                return;
+            }
+            if (!allOrders || allOrders.length === 0) {
+                alert("আজকের কোনো অর্ডারের রেকর্ড পাওয়া যায়নি।");
+                return;
+            }
+
+            const totalRevenue = allOrders.reduce((sum, o) => {
+                const p = parseFloat(getOrderPrice(o));
+                return sum + (isNaN(p) ? 0 : p);
+            }, 0);
+
+            const confirmEnd = confirm(
+                `আপনি কি দিনের কাজ শেষ করতে চান?\n\n` +
+                `📊 আজকের মোট অর্ডার: ${allOrders.length}টি\n` +
+                `💵 মোট বিল/আদায়: ৳${totalRevenue}\n\n` +
+                `এটি আজকের সব অর্ডারের একটি ইংরেজি PDF রিপোর্ট তৈরি করে ডাউনলোড করবে এবং সার্ভার থেকে সব অর্ডার মুছে ফেলবে।`
+            );
+            if (!confirmEnd) return;
+
+            const dayEndBtn = document.getElementById('dayEndBtn');
+            if (dayEndBtn) {
+                dayEndBtn.disabled = true;
+                dayEndBtn.innerText = "⏳ প্রসেস হচ্ছে...";
+            }
+
+            try {
+                // Clean any leftover files from storage
+                const filesToDelete = allOrders.flatMap(o => (o.files || []).map(f => f.path)).filter(Boolean);
+                if (filesToDelete.length > 0) {
+                    await client.storage.from('print_docs').remove(filesToDelete);
+                }
+
+                // 2. Generate PDF Summary with clean English labels
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+
+                doc.setFontSize(18);
+                doc.text("Varsity Corner - Daily Orders Report", 14, 20);
+
+                doc.setFontSize(11);
+                const todayStr = new Date().toLocaleDateString('en-GB');
+                doc.text(`Date: ${todayStr} | Total Orders: ${allOrders.length} | Total Revenue: ${totalRevenue} Tk`, 14, 28);
+
+                const tableRows = allOrders.map((o, idx) => [
+                    idx + 1,
+                    getOrderCode(o, idx + 1),
+                    safeAscii(o.customer_name, o.phone),
+                    o.phone || 'N/A',
+                    translatePrintTypeToEnglish(o.print_type),
+                    `${o.copies || 1} set`,
+                    getOrderPrice(o) ? `${getOrderPrice(o)} Tk` : '-',
+                    translateStatusToEnglish(o.status)
+                ]);
+
+                doc.autoTable({
+                    head: [['#', 'Order ID', 'Customer', 'Phone', 'Print Type', 'Copies', 'Bill (Tk)', 'Status']],
+                    body: tableRows,
+                    startY: 34,
+                    styles: { fontSize: 9 },
+                    headStyles: { fillColor: [15, 23, 42] }
+                });
+
+                // 3. Download the PDF locally
+                doc.save(`Varsity_Corner_Report_${todayStr.replace(/\//g, '-')}.pdf`);
+
+                // 4. Wipe all database rows
+                const idsToDelete = allOrders.map(o => o.id);
+                const { error: delErr } = await client.from('orders').delete().in('id', idsToDelete);
+                if (delErr) throw delErr;
+
+                alert(`রিপোর্ট ডাউনলোড সম্পন্ন হয়েছে এবং সার্ভার খালি করা হয়েছে!\nমোট আয়: ৳${totalRevenue}`);
+                loadOrders();
+            } catch (err) {
+                console.error("Day End Error:", err);
+                alert("Day End সম্পন্ন করতে সমস্যা হয়েছে: " + err.message);
+            } finally {
+                if (dayEndBtn) {
+                    dayEndBtn.disabled = false;
+                    dayEndBtn.innerText = "🛑 Day End (রিপোর্ট ও ডিলিট)";
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

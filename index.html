@@ -2,573 +2,1033 @@
 <html lang="bn">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>ভার্সিটি কর্নার | প্রিন্ট ও ছবি অর্ডার</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg: #f5f7fb;
-      --card: #ffffff;
-      --ink: #0f172a;
-      --muted: #64748b;
-      --line: #e2e8f0;
-      --primary: #0f172a;
-      --primary-tx: #ffffff;
-      --wa: #16a34a;
-      --wa-dark: #15803d;
-      --wa-tx: #ffffff;
-      --warn-bg: #fef2f2;
-      --warn-border: #fca5a5;
-      --warn-text: #b91c1c;
-      --radius: 14px;
-      --shadow: 0 2px 8px -2px rgba(15, 23, 42, 0.06);
-    }
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>ভার্সিটি কর্নার | প্রিন্ট ও ছবি অর্ডার</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --bg: #f5f7fb;
+            --card: #ffffff;
+            --ink: #0f172a;
+            --muted: #64748b;
+            --line: #e2e8f0;
+            --primary: #0f172a;
+            --primary-tx: #ffffff;
+            --wa: #16a34a;
+            --wa-dark: #15803d;
+            --wa-tx: #ffffff;
+            --warn-bg: #fef2f2;
+            --warn-border: #fca5a5;
+            --warn-text: #b91c1c;
+            --radius: 14px;
+            --shadow: 0 2px 8px -2px rgba(15, 23, 42, 0.06);
+        }
 
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #090d16;
-        --card: #131b2e;
-        --ink: #f1f5f9;
-        --muted: #94a3b8;
-        --line: #222f4b;
-        --primary: #f8fafc;
-        --primary-tx: #090d16;
-        --wa: #22c55e;
-        --wa-dark: #16a34a;
-        --wa-tx: #052e16;
-        --warn-bg: #2d1215;
-        --warn-border: #7f1d1d;
-        --warn-text: #fca5a5;
-        --shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
-      }
-    }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #090d16;
+                --card: #131b2e;
+                --ink: #f1f5f9;
+                --muted: #94a3b8;
+                --line: #222f4b;
+                --primary: #f8fafc;
+                --primary-tx: #090d16;
+                --wa: #22c55e;
+                --wa-dark: #16a34a;
+                --wa-tx: #052e16;
+                --warn-bg: #2d1215;
+                --warn-border: #7f1d1d;
+                --warn-text: #fca5a5;
+                --shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+            }
+        }
 
-    *, *::before, *::after {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--ink);
-      font-family: "Hind Siliguri", system-ui, -apple-system, sans-serif;
-      font-size: 16px;
-      line-height: 1.5;
-      padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px));
-    }
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--ink);
+            font-family: "Hind Siliguri", system-ui, -apple-system, sans-serif;
+            font-size: 16px;
+            line-height: 1.5;
+            padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px));
+        }
 
-    main {
-      max-width: 480px;
-      margin: 0 auto;
-      padding: 18px 16px;
-    }
+        main {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 18px 16px;
+        }
 
-    .header {
-      margin-bottom: 20px;
-    }
+        /* Top Nav Tabs */
+        .nav-bar {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            background: rgba(100, 116, 139, 0.1);
+            padding: 4px;
+            border-radius: 12px;
+            margin-bottom: 18px;
+        }
 
-    .badge {
-      display: inline-block;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--muted);
-      letter-spacing: .02em;
-      margin-bottom: 4px;
-    }
+        .nav-tab {
+            padding: 10px 12px;
+            border-radius: 9px;
+            border: none;
+            background: transparent;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all .15s ease;
+        }
 
-    h1 {
-      font-size: clamp(26px, 7.5vw, 32px);
-      line-height: 1.2;
-      margin: 0 0 6px;
-      font-weight: 700;
-      letter-spacing: -0.01em;
-    }
+        .nav-tab.active {
+            background: var(--card);
+            color: var(--ink);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        }
 
-    .sub {
-      margin: 0;
-      font-size: 15px;
-      color: var(--muted);
-    }
+        .badge-count {
+            background: #ef4444;
+            color: #fff;
+            font-size: 11px;
+            padding: 1px 7px;
+            border-radius: 10px;
+            font-weight: 700;
+        }
 
-    .card {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 16px;
-      margin-bottom: 14px;
-      box-shadow: var(--shadow);
-      transition: border-color .15s ease;
-    }
+        .header {
+            margin-bottom: 20px;
+        }
 
-    .q {
-      font-weight: 700;
-      font-size: 16px;
-      margin: 0 0 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-    }
+        .badge {
+            display: inline-block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--muted);
+            letter-spacing: .02em;
+            margin-bottom: 4px;
+        }
 
-    .opt {
-      font-weight: 400;
-      font-size: 13px;
-      color: var(--muted);
-    }
+        h1 {
+            font-size: clamp(26px, 7.5vw, 32px);
+            line-height: 1.2;
+            margin: 0 0 6px;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
 
-    /* Grid segments */
-    .seg {
-      display: grid;
-      gap: 8px;
-    }
+        .sub {
+            margin: 0;
+            font-size: 15px;
+            color: var(--muted);
+        }
 
-    .seg.one { grid-template-columns: 1fr; }
-    .seg.two { grid-template-columns: repeat(2, 1fr); }
-    .seg.three { grid-template-columns: repeat(3, 1fr); }
-    .seg + .seg { margin-top: 8px; }
+        .card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 14px;
+            box-shadow: var(--shadow);
+            transition: border-color .15s ease;
+        }
 
-    .seg input {
-      position: absolute;
-      opacity: 0;
-      pointer-events: none;
-    }
+        .q {
+            font-weight: 700;
+            font-size: 16px;
+            margin: 0 0 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
 
-    .seg label {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      min-height: 48px;
-      padding: 10px 8px;
-      border: 1.5px solid var(--line);
-      border-radius: 10px;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 15px;
-      background: var(--card);
-      transition: all 0.15s ease;
-      user-select: none;
-    }
+        .opt {
+            font-weight: 400;
+            font-size: 13px;
+            color: var(--muted);
+        }
 
-    .seg label:active {
-      transform: scale(0.98);
-    }
+        .seg {
+            display: grid;
+            gap: 8px;
+        }
 
-    .seg input:checked + label {
-      background: var(--primary);
-      color: var(--primary-tx);
-      border-color: var(--primary);
-    }
+        .seg.one {
+            grid-template-columns: 1fr;
+        }
 
-    /* Number & Range inputs */
-    .row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+        .seg.two {
+            grid-template-columns: repeat(2, 1fr);
+        }
 
-    .row > * {
-      flex: 1;
-    }
+        .seg.three {
+            grid-template-columns: repeat(3, 1fr);
+        }
 
-    .dash {
-      flex: 0 0 auto;
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--muted);
-    }
+        .seg+.seg {
+            margin-top: 8px;
+        }
 
-    input[type=number],
-    input[type=text],
-    textarea {
-      width: 100%;
-      border: 1.5px solid var(--line);
-      border-radius: 10px;
-      background: var(--card);
-      color: var(--ink);
-      font-size: 16px;
-      font-family: inherit;
-      padding: 0 12px;
-      transition: border-color .15s ease;
-    }
+        .seg input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
 
-    input[type=number],
-    input[type=text] {
-      height: 48px;
-    }
+        .seg label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            min-height: 48px;
+            padding: 10px 8px;
+            border: 1.5px solid var(--line);
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 15px;
+            background: var(--card);
+            transition: all 0.15s ease;
+            user-select: none;
+        }
 
-    textarea {
-      min-height: 80px;
-      padding: 10px 12px;
-      resize: vertical;
-    }
+        .seg label:active {
+            transform: scale(0.98);
+        }
 
-    input:focus, textarea:focus {
-      outline: none;
-      border-color: var(--wa);
-    }
+        .seg input:checked+label {
+            background: var(--primary);
+            color: var(--primary-tx);
+            border-color: var(--primary);
+        }
 
-    /* Stepper Counter */
-    .step {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-    }
+        .row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-    .step button {
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
-      border: 1.5px solid var(--line);
-      background: var(--card);
-      color: var(--ink);
-      font-size: 24px;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .12s ease;
-    }
+        .row>* {
+            flex: 1;
+        }
 
-    .step button:active {
-      transform: scale(0.95);
-      background: var(--bg);
-    }
+        .dash {
+            flex: 0 0 auto;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--muted);
+        }
 
-    .step input {
-      width: 78px;
-      height: 48px;
-      text-align: center;
-      font-size: 20px;
-      font-weight: 700;
-    }
+        input[type=number],
+        input[type=text],
+        textarea {
+            width: 100%;
+            border: 1.5px solid var(--line);
+            border-radius: 10px;
+            background: var(--card);
+            color: var(--ink);
+            font-size: 16px;
+            font-family: inherit;
+            padding: 0 12px;
+            transition: border-color .15s ease;
+        }
 
-    /* Notice Boxes */
-    .must {
-      margin: 14px 0;
-      padding: 12px 14px;
-      border-radius: 10px;
-      background: var(--warn-bg);
-      border: 1px solid var(--warn-border);
-      color: var(--warn-text);
-      font-weight: 600;
-      font-size: 14px;
-      line-height: 1.45;
-    }
+        input[type=number],
+        input[type=text] {
+            height: 48px;
+        }
 
-    #err {
-      color: var(--warn-text);
-      background: var(--warn-bg);
-      border: 1px solid var(--warn-border);
-      padding: 10px 14px;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 600;
-      margin-bottom: 12px;
-    }
+        textarea {
+            min-height: 80px;
+            padding: 10px 12px;
+            resize: vertical;
+        }
 
-    #note {
-      margin: 12px 0 0;
-      padding: 12px;
-      border-radius: 10px;
-      border: 1px solid var(--wa);
-      background: rgba(22, 163, 74, 0.08);
-      font-size: 14px;
-      font-weight: 500;
-    }
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--wa);
+        }
 
-    .hidden {
-      display: none !important;
-    }
+        .step {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
 
-    /* Fixed Sticky Footer on Mobile */
-    .sticky-footer {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: var(--card);
-      border-top: 1px solid var(--line);
-      padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px));
-      z-index: 50;
-      box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.06);
-    }
+        .step button {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            border: 1.5px solid var(--line);
+            background: var(--card);
+            color: var(--ink);
+            font-size: 24px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-    .footer-inner {
-      max-width: 480px;
-      margin: 0 auto;
-    }
+        .step input {
+            width: 78px;
+            height: 48px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 700;
+        }
 
-    #send {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      text-decoration: none;
-      width: 100%;
-      height: 52px;
-      border-radius: 12px;
-      background: var(--wa);
-      color: var(--wa-tx);
-      font-size: 18px;
-      font-weight: 700;
-      border: 0;
-      cursor: pointer;
-      transition: background .15s ease, transform .1s ease;
-    }
+        .file-box {
+            border: 2px dashed var(--line);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            background: rgba(100, 116, 139, 0.04);
+            transition: border-color .15s;
+        }
 
-    #send:active {
-      transform: scale(0.98);
-      background: var(--wa-dark);
-    }
+        .file-box:hover {
+            border-color: var(--wa);
+        }
 
-    #send svg {
-      width: 22px;
-      height: 22px;
-      fill: currentColor;
-    }
-  </style>
+        .file-list {
+            margin-top: 10px;
+            font-size: 14px;
+            color: var(--muted);
+            text-align: left;
+        }
+
+        #err {
+            color: var(--warn-text);
+            background: var(--warn-bg);
+            border: 1px solid var(--warn-border);
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Sticky Footer */
+        .sticky-footer {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--card);
+            border-top: 1px solid var(--line);
+            padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px));
+            z-index: 50;
+            box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.06);
+        }
+
+        .footer-inner {
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        .btn-main {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            height: 52px;
+            border-radius: 12px;
+            background: var(--wa);
+            color: var(--wa-tx);
+            font-size: 18px;
+            font-weight: 700;
+            border: 0;
+            cursor: pointer;
+        }
+
+        .btn-main:disabled {
+            background: var(--muted);
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: var(--primary);
+            color: var(--primary-tx);
+        }
+
+        /* Order Tracker Cards */
+        .order-track-card {
+            background: var(--card);
+            border: 1.5px solid var(--line);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 14px;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .order-track-card.waiting {
+            border-left: 6px solid #f59e0b;
+        }
+
+        .order-track-card.progressing {
+            border-left: 6px solid #3b82f6;
+        }
+
+        .order-track-card.ready {
+            border-left: 6px solid #16a34a;
+            background: #fcfdfd;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .badge-waiting {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-prog {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge-ready {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        /* Price Banner */
+        .bill-box {
+            margin-top: 12px;
+            padding: 12px 14px;
+            background: #ecfdf5;
+            border: 1.5px solid #a7f3d0;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .bill-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #065f46;
+        }
+
+        .bill-amount {
+            font-size: 20px;
+            font-weight: 700;
+            color: #047857;
+        }
+    </style>
 </head>
 
 <body>
-  <main>
-    <div class="header">
-      <span class="badge">ভার্সিটি কর্নার</span>
-      <h1>দাঁড়িয়ে অপেক্ষা আর নয়</h1>
-      <p class="sub">তথ্য পূরণ করে বোতাম চাপুন। আপনার কাজ শুরু হয়ে যাবে।</p>
+    <main id="appContainer">
+        <!-- Top Nav Switcher -->
+        <div class="nav-bar">
+            <button type="button" id="tabNewOrder" class="nav-tab active" onclick="switchView('form')">
+                📝 নতুন অর্ডার
+            </button>
+            <button type="button" id="tabMyOrders" class="nav-tab" onclick="switchView('orders')">
+                📦 আমার অর্ডার <span id="ordersCountBadge" class="badge-count hidden">0</span>
+            </button>
+        </div>
+
+        <!-- Order Form View -->
+        <div id="formSection">
+            <div class="header">
+                <span class="badge">ভার্সিটি কর্নার</span>
+                <h1>দাঁড়িয়ে অপেক্ষা আর নয়</h1>
+                <p class="sub">তথ্য দিন ও ফাইল আপলোড করুন। আপনার কাজ রেডি হতে থাকবে।</p>
+            </div>
+
+            <div class="card">
+                <p class="q">আপনার তথ্য <span style="color:var(--warn-text)">*</span></p>
+                <input type="text" id="custName" placeholder="আপনার নাম" required style="margin-bottom:10px;">
+                <input type="text" id="custPhone" placeholder="মোবাইল নম্বর (১১ ডিজিট)" inputmode="tel" required>
+            </div>
+
+            <div class="card">
+                <p class="q">কী লাগবে?</p>
+                <div class="seg three">
+                    <span><input type="radio" name="type" id="t1" value="print_c"><label for="t1">রঙিন</label></span>
+                    <span><input type="radio" name="type" id="t2" value="print_bw" checked><label
+                            for="t2">সাদা-কালো</label></span>
+                    <span><input type="radio" name="type" id="t3" value="photo"><label for="t3">ছবি</label></span>
+                </div>
+            </div>
+
+            <div class="card hidden" id="photoBox">
+                <p class="q">ছবির সাইজ</p>
+                <div class="seg two">
+                    <span><input type="radio" name="ptype" id="p1" value="পাসপোর্ট সাইজ" checked><label
+                            for="p1">পাসপোর্ট</label></span>
+                    <span><input type="radio" name="ptype" id="p2" value="স্ট্যাম্প সাইজ"><label
+                            for="p2">স্ট্যাম্প</label></span>
+                </div>
+            </div>
+
+            <div class="card" id="sideBox">
+                <p class="q">প্রিন্টের পিঠ</p>
+                <div class="seg two">
+                    <span><input type="radio" name="side" id="s1" value="একপিঠ" checked><label
+                            for="s1">একপিঠ</label></span>
+                    <span><input type="radio" name="side" id="s2" value="এপিঠ ওপিঠ"><label for="s2">এপিঠ
+                            ওপিঠ</label></span>
+                </div>
+            </div>
+
+            <div class="card" id="rangeBox">
+                <p class="q">কত থেকে কত পেজ? <span class="opt">(ঐচ্ছিক, খালি রাখলে সব)</span></p>
+                <div class="row">
+                    <input type="number" id="from" inputmode="numeric" min="1" placeholder="শুরু">
+                    <span class="dash">থেকে</span>
+                    <input type="number" id="to" inputmode="numeric" min="1" placeholder="শেষ">
+                </div>
+            </div>
+
+            <div class="card" id="qtyBox">
+                <p class="q" id="qtyLabel">কত সেট?</p>
+                <div class="step">
+                    <button type="button" id="minus" aria-label="কমান">−</button>
+                    <input type="number" id="qty" inputmode="numeric" min="1" value="1">
+                    <button type="button" id="plus" aria-label="বাড়ান">+</button>
+                </div>
+            </div>
+
+            <div class="card" id="extraBox">
+                <p class="q">অতিরিক্ত কিছু লাগবে? <span class="opt">(ঐচ্ছিক)</span></p>
+                <div class="seg one">
+                    <span><input type="checkbox" id="cover"><label for="cover">অ্যাসাইনমেন্ট কভার পেজ যুক্ত
+                            করুন</label></span>
+                </div>
+                <div class="seg two">
+                    <span><input type="checkbox" id="spiral"><label for="spiral">স্পাইরাল বাইন্ডিং</label></span>
+                    <span><input type="checkbox" id="tape"><label for="tape">টেপ বাইন্ডিং</label></span>
+                </div>
+            </div>
+
+            <div class="card">
+                <p class="q">ফাইল আপলোড করুন <span class="opt">(সর্বোচ্চ ৩টি, মোট ২৫০MB)</span></p>
+                <div class="file-box" onclick="document.getElementById('fileInput').click()">
+                    <span id="filePrompt">📄 ফাইল নির্বাচন করতে এখানে ট্যাপ করুন</span>
+                    <input type="file" id="fileInput" multiple accept=".pdf,.doc,.docx,image/*" style="display:none">
+                </div>
+                <div id="fileListDisplay" class="file-list"></div>
+            </div>
+
+            <div class="card">
+                <p class="q">আলাদা কোনো নির্দেশনা? <span class="opt">(ঐচ্ছিক)</span></p>
+                <textarea id="instr" placeholder="যেমন: প্রথম পেজ রঙিন, বাকি সব একপিঠ..."></textarea>
+            </div>
+
+            <p id="err" class="hidden"></p>
+        </div>
+
+        <!-- Customer Orders History / Live Status View -->
+        <div id="ordersSection" class="hidden">
+            <div class="header" style="margin-bottom:14px;">
+                <span class="badge">অর্ডার ট্র্যাকার</span>
+                <h1 style="font-size:24px;">আমার আজকের অর্ডার</h1>
+                <p class="sub">দোকানদার কাজ শুরু করলে বা শেষ করলে এখানে লাইভ দেখতে পাবেন।</p>
+            </div>
+
+            <!-- Lookup phone box if not recognized -->
+            <div id="phoneLookupCard" class="card hidden">
+                <p class="q">মোবাইল নম্বর দিয়ে অর্ডার খুঁজুন</p>
+                <div class="row">
+                    <input type="text" id="lookupPhoneInput" placeholder="যেমন: 01700000000" inputmode="tel">
+                    <button type="button" onclick="handleManualLookup()"
+                        style="height:48px; background:var(--primary); color:var(--primary-tx); border:none; border-radius:10px; font-weight:700; cursor:pointer;">খুঁজুন</button>
+                </div>
+            </div>
+
+            <div id="customerOrdersContainer">
+                <div
+                    style="text-align: center; color: var(--muted); padding: 30px; background: var(--card); border-radius: 12px; border: 1px solid var(--line);">
+                    অর্ডার লোড হচ্ছে...
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Sticky Footer for Actions -->
+    <div class="sticky-footer" id="footerBar">
+        <div class="footer-inner">
+            <button type="button" id="sendBtn" class="btn-main">অর্ডার জমা দিন</button>
+            <button type="button" id="newOrderBtn" class="btn-main btn-secondary hidden" onclick="switchView('form')">
+                + আরেকটি নতুন অর্ডার করুন
+            </button>
+        </div>
     </div>
 
-    <div class="card">
-      <p class="q">কী প্রিন্ট করতে চান?</p>
-      <div class="seg three">
-        <span><input type="radio" name="type" id="t1" value="print_c"><label for="t1">রঙিন</label></span>
-        <span><input type="radio" name="type" id="t2" value="print_bw"><label for="t2">সাদা-কালো</label></span>
-        <span><input type="radio" name="type" id="t3" value="photo"><label for="t3">ছবি</label></span>
-      </div>
-    </div>
+    <script>
+        const SUPABASE_URL = "https://sdayhzqgcchjtmdljxnl.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_kCsTPa5LB3NbLe79UDl_Qw_StUTruit";
+        const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    <div class="card hidden" id="photoBox">
-      <p class="q">ছবির সাইজ নির্বাচন করুন</p>
-      <div class="seg two">
-        <span><input type="radio" name="ptype" id="p1" value="পাসপোর্ট সাইজ" checked><label for="p1">পাসপোর্ট সাইজ</label></span>
-        <span><input type="radio" name="ptype" id="p2" value="স্ট্যাম্প সাইজ"><label for="p2">স্ট্যাম্প সাইজ</label></span>
-      </div>
-    </div>
+        let selectedFiles = [];
+        let currentCustPhone = localStorage.getItem('vc_cust_phone') || "";
+        let realtimeChannel = null;
 
-    <div class="card hidden" id="sideBox">
-      <p class="q">প্রিন্টের পিঠ</p>
-      <div class="seg two">
-        <span><input type="radio" name="side" id="s1" value="একপিঠ" checked><label for="s1">একপিঠ</label></span>
-        <span><input type="radio" name="side" id="s2" value="এপিঠ ওপিঠ"><label for="s2">এপিঠ ওপিঠ</label></span>
-      </div>
-    </div>
+        const $ = (id) => document.getElementById(id);
+        const getType = () => {
+            const c = document.querySelector('input[name="type"]:checked');
+            return c ? c.value : 'print_bw';
+        };
 
-    <div class="card hidden" id="rangeBox">
-      <p class="q">পেজ রেঞ্জ <span class="opt">(খালি রাখলে সব পেজ)</span></p>
-      <div class="row">
-        <input type="number" id="from" inputmode="numeric" min="1" placeholder="শুরু" aria-label="শুরুর পেজ">
-        <span class="dash">থেকে</span>
-        <input type="number" id="to" inputmode="numeric" min="1" placeholder="শেষ" aria-label="শেষ পেজ">
-      </div>
-    </div>
+        function refresh() {
+            const t = getType();
+            $('photoBox').classList.toggle('hidden', t !== 'photo');
+            $('sideBox').classList.toggle('hidden', t === 'photo');
+            $('rangeBox').classList.toggle('hidden', t === 'photo');
+            $('extraBox').classList.toggle('hidden', t === 'photo');
+            $('qtyLabel').innerText = t === 'photo' ? 'কত কপি ছবি? (কমপক্ষে ৪)' : 'কত সেট?';
+            $('qty').min = t === 'photo' ? 4 : 1;
+            if (t === 'photo' && (parseInt($('qty').value) || 0) < 4) {
+                $('qty').value = 4;
+            }
+        }
 
-    <div class="card hidden" id="qtyBox">
-      <p class="q" id="qtyLabel">কত সেট?</p>
-      <div class="step">
-        <button type="button" id="minus" aria-label="কমান">−</button>
-        <input type="number" id="qty" inputmode="numeric" min="1" value="1" aria-label="সংখ্যা">
-        <button type="button" id="plus" aria-label="বাড়ান">+</button>
-      </div>
-    </div>
+        document.querySelectorAll('input[name="type"]').forEach(r => r.addEventListener('change', refresh));
 
-    <div class="card hidden" id="extraBox">
-      <p class="q">অতিরিক্ত সেবা <span class="opt">(ঐচ্ছিক)</span></p>
-      <div class="seg one">
-        <span><input type="checkbox" id="cover"><label for="cover">অ্যাসাইনমেন্ট কভার পেজ যুক্ত করুন</label></span>
-      </div>
-      <div class="seg two">
-        <span><input type="checkbox" id="spiral"><label for="spiral">স্পাইরাল বাইন্ডিং</label></span>
-        <span><input type="checkbox" id="tape"><label for="tape">টেপ বাইন্ডিং</label></span>
-      </div>
-    </div>
-
-    <div class="card hidden" id="instrBox">
-      <p class="q">বিশেষ কোনো নির্দেশনা? <span class="opt">(ঐচ্ছিক)</span></p>
-      <textarea id="instr" placeholder="যেমন: প্রথম পেজ রঙিন, বাকি সব সাদা-কালো..."></textarea>
-    </div>
-
-    <div class="card hidden" id="nameBox">
-      <p class="q">আপনার নাম <span class="opt">(ঐচ্ছিক)</span></p>
-      <input type="text" id="name" placeholder="নাম লিখুন" autocomplete="name">
-    </div>
-
-    <div class="must">
-      ⚠️ তথ্য পাঠানোর পর ফাইলটি অবশ্যই হোয়াটসঅ্যাপে সেন্ড করতে হবে। ফাইল ছাড়া কাজ শুরু হবে না।
-    </div>
-
-    <p id="err" class="hidden">অনুগ্রহ করে আগে কী প্রিন্ট করবেন তা নির্বাচন করুন।</p>
-    <p id="note" class="hidden"></p>
-  </main>
-
-  <div class="sticky-footer">
-    <div class="footer-inner">
-      <a id="send" href="#" target="_blank" rel="noopener noreferrer">
-        <svg viewBox="0 0 24 24">
-          <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm.01 18.04c-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.167 8.167 0 0 1-1.25-4.27c0-4.52 3.68-8.2 8.2-8.2 2.19 0 4.25.85 5.8 2.4 1.55 1.55 2.41 3.61 2.4 5.8 0 4.52-3.68 8.13-8.16 8.13zm4.49-6.13c-.25-.12-1.47-.72-1.7-.81-.23-.08-.39-.12-.56.12-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-2-1.23-.74-.66-1.24-1.47-1.39-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.12-.14.17-.25.25-.41.08-.17.04-.31-.02-.43s-.56-1.34-.76-1.84c-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.12.17 1.78 2.71 4.3 3.8.6.26 1.07.41 1.44.53.61.19 1.16.17 1.6.1 1.4-.08 1.47-.72 1.7-.81z"/>
-        </svg>
-        <span>WhatsApp-এ অর্ডার পাঠান</span>
-      </a>
-    </div>
-  </div>
-
-  <script>
-    (function () {
-      var SHOP = "8801734700329";
-      var $ = function (id) { return document.getElementById(id); };
-      var bn = function (n) {
-        try { return Number(n).toLocaleString("bn-BD", { useGrouping: false }); }
-        catch (e) { return String(n); }
-      };
-
-      function type() {
-        var c = document.querySelector('input[name="type"]:checked');
-        return c ? c.value : null;
-      }
-      function isPrint(t) { return t === "print_c" || t === "print_bw"; }
-      function min() { return type() === "photo" ? 4 : 1; }
-      function qty() {
-        var v = parseInt($("qty").value, 10);
-        return isNaN(v) || v < min() ? min() : v;
-      }
-      function show(id, on) {
-        $(id).classList.toggle("hidden", !on);
-      }
-
-      function refresh() {
-        var t = type();
-        show("photoBox", t === "photo");
-        show("sideBox", t === "print_bw");
-        show("rangeBox", isPrint(t));
-        show("extraBox", isPrint(t));
-        show("qtyBox", !!t);
-        show("instrBox", !!t);
-        show("nameBox", !!t);
-
-        $("qtyLabel").textContent = t === "photo" ? "কত কপি ছবি? (কমপক্ষে ৪ কপি)" : "কত সেট?";
-        $("qty").min = min();
-        if (t) $("err").classList.add("hidden");
-      }
-
-      document.querySelectorAll('input[name="type"]').forEach(function (r) {
-        r.addEventListener("change", function () {
-          $("qty").value = min();
-          refresh();
+        $('spiral').addEventListener('change', function () {
+            if (this.checked) $('tape').checked = false;
         });
-      });
-
-      $("spiral").addEventListener("change", function () {
-        if (this.checked) $("tape").checked = false;
-      });
-      $("tape").addEventListener("change", function () {
-        if (this.checked) $("spiral").checked = false;
-      });
-
-      $("minus").onclick = function () {
-        $("qty").value = Math.max(min(), qty() - 1);
-        upd();
-      };
-      $("plus").onclick = function () {
-        $("qty").value = qty() + 1;
-        upd();
-      };
-      $("qty").addEventListener("blur", function () {
-        $("qty").value = qty();
-        upd();
-      });
-
-      function build() {
-        var t = type();
-        if (!t) return null;
-
-        var L = [];
-        var nm = $("name").value.trim();
-        if (nm) { L.push("*নাম:* " + nm); L.push(""); }
-        L.push("*ভার্সিটি কর্নার | নতুন অর্ডার*");
-        L.push("");
-
-        if (t === "photo") {
-          L.push("• *ধরন:* ছবি (" + document.querySelector('input[name="ptype"]:checked').value + ")");
-          L.push("• *পরিমাণ:* " + bn(qty()) + " কপি");
-        } else {
-          L.push(t === "print_c" ? "• *ধরন:* প্রিন্ট (রঙিন)" : "• *ধরন:* প্রিন্ট (সাদা-কালো)");
-          if (t === "print_bw") {
-            L.push("• *পিঠ:* " + document.querySelector('input[name="side"]:checked').value);
-          }
-          var f = parseInt($("from").value, 10), e = parseInt($("to").value, 10);
-          var r = "সব পেজ";
-          if (f && e) r = bn(f) + " থেকে " + bn(e) + " পেজ";
-          else if (f) r = bn(f) + " নম্বর পেজ থেকে শেষ পর্যন্ত";
-          else if (e) r = "শুরু থেকে " + bn(e) + " নম্বর পেজ পর্যন্ত";
-
-          L.push("• *পেজ:* " + r);
-          L.push("• *সেট:* " + bn(qty()) + " সেট");
-
-          var ex = [];
-          if ($("cover").checked) ex.push("অ্যাসাইনমেন্ট কভার পেজ");
-          if ($("spiral").checked) ex.push("স্পাইরাল বাইন্ডিং");
-          if ($("tape").checked) ex.push("টেপ বাইন্ডিং");
-          if (ex.length) {
-            L.push("");
-            L.push("• *অতিরিক্ত:* " + ex.join(", "));
-          }
-        }
-
-        var ins = $("instr").value.trim();
-        if (ins) {
-          L.push("");
-          L.push("• *বিশেষ নির্দেশনা:* " + ins);
-        }
-
-        L.push("");
-        L.push("📎 *ফাইল এই চ্যাটেই এখনই এটাচ করে দিচ্ছি।*");
-
-        return "https://wa.me/" + SHOP + "?text=" + encodeURIComponent(L.join("\n"));
-      }
-
-      function upd() {
-        var u = build();
-        $("send").href = u || "#";
-      }
-
-      ["input", "change"].forEach(function (n) {
-        document.addEventListener(n, function (ev) {
-          if (ev.target.id !== "send") setTimeout(upd, 0);
+        $('tape').addEventListener('change', function () {
+            if (this.checked) $('spiral').checked = false;
         });
-      });
 
-      $("send").onclick = function (ev) {
-        var u = build();
-        if (!u) {
-          ev.preventDefault();
-          $("err").classList.remove("hidden");
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-          return;
+        $('minus').onclick = () => {
+            const min = parseInt($('qty').min) || 1;
+            const cur = parseInt($('qty').value) || min;
+            $('qty').value = Math.max(min, cur - 1);
+        };
+        $('plus').onclick = () => {
+            const cur = parseInt($('qty').value) || 1;
+            $('qty').value = cur + 1;
+        };
+        $('qty').addEventListener('change', () => {
+            const min = parseInt($('qty').min) || 1;
+            const cur = parseInt($('qty').value) || min;
+            $('qty').value = Math.max(min, cur);
+        });
+
+        // File selection & 250MB limit validation
+        $('fileInput').addEventListener('change', (e) => {
+            const files = Array.from(e.target.files || []);
+            if (files.length === 0) return;
+
+            if (files.length > 3) {
+                showError("একবারে সর্বোচ্চ ৩টি ফাইল আপলোড করতে পারবেন।");
+                e.target.value = "";
+                return;
+            }
+            const totalBytes = files.reduce((acc, f) => acc + f.size, 0);
+            if (totalBytes > 250 * 1024 * 1024) {
+                showError("সব ফাইল মিলে মোট সাইজ ২৫০ MB এর বেশি হওয়া যাবে না।");
+                e.target.value = "";
+                return;
+            }
+            $('err').classList.add('hidden');
+            selectedFiles = files;
+            $('filePrompt').innerText = `✓ ${files.length}টি ফাইল নির্বাচিত`;
+            $('fileListDisplay').innerHTML = files.map(f => `• ${escapeHtml(f.name)} (${(f.size / (1024 * 1024)).toFixed(2)} MB)`).join('<br>');
+        });
+
+        function showError(msg) {
+            $('err').innerText = msg;
+            $('err').classList.remove('hidden');
+            $('err').scrollIntoView({ behavior: 'smooth' });
         }
-        $("send").href = u;
-        var n = $("note");
-        n.textContent = "WhatsApp খোলার পর ফাইলটি একই চ্যাটে পাঠাতে ভুলবেন না।";
-        n.classList.remove("hidden");
-      };
 
-      refresh();
-      upd();
-    })();
-  </script>
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        // Helper: Format human-friendly daily Order Code (e.g. 31-10-001)
+        function getOrderCode(order, fallbackIdx) {
+            if (order.order_code) return String(order.order_code);
+            const match = (order.instructions || '').match(/\[অর্ডার:\s*([\d-]+)\]/i);
+            if (match) return match[1];
+
+            const dt = order.created_at ? new Date(order.created_at) : new Date();
+            const d = String(dt.getDate()).padStart(2, '0');
+            const m = String(dt.getMonth() + 1).padStart(2, '0');
+            if (typeof fallbackIdx === 'number') {
+                return `${d}-${m}-${String(fallbackIdx).padStart(3, '0')}`;
+            }
+            return `${d}-${m}-${(order.id || '').substring(0, 4).toUpperCase()}`;
+        }
+
+        // Helper: Extract price from order object or instructions
+        function getOrderPrice(order) {
+            if (order.price) return String(order.price);
+            if (order.bill) return String(order.bill);
+            if (order.amount) return String(order.amount);
+            const match = (order.instructions || '').match(/\[(?:বিল|মূল্য|দাম|price|bill):\s*৳?\s*(\d+(?:\.\d+)?)\s*(?:টাকা)?\]/i);
+            return match ? match[1] : '';
+        }
+
+        function cleanInstructions(instr) {
+            if (!instr) return '';
+            return instr
+                .replace(/\[(?:বিল|মূল্য|দাম|price|bill):\s*৳?\s*\d+(?:\.\d+)?\s*(?:টাকা)?\]/gi, '')
+                .replace(/\[অর্ডার:\s*[\d-]+\]/gi, '')
+                .trim();
+        }
+
+        // Submit Order
+        $('sendBtn').onclick = async () => {
+            const name = $('custName').value.trim();
+            const phone = $('custPhone').value.trim().replace(/[\s-]/g, '');
+
+            if (!name || !phone) {
+                showError("দয়া করে আপনার নাম এবং মোবাইল নম্বর দিন।");
+                return;
+            }
+            if (phone.length < 10) {
+                showError("দয়া করে একটি সঠিক মোবাইল নম্বর দিন।");
+                return;
+            }
+            if (selectedFiles.length === 0) {
+                showError("দয়া করে অন্তত একটি ফাইল সিলেক্ট করুন।");
+                return;
+            }
+
+            $('err').classList.add('hidden');
+            $('sendBtn').disabled = true;
+            $('sendBtn').innerText = "ফাইল আপলোড হচ্ছে... অনুগ্রহ করে অপেক্ষা করুন";
+
+            const fileMetadata = [];
+
+            try {
+                // Generate daily order sequence code (e.g. 31-10-001)
+                const todayStart = new Date();
+                todayStart.setHours(0, 0, 0, 0);
+                const { count } = await client
+                    .from('orders')
+                    .select('*', { count: 'exact', head: true })
+                    .gte('created_at', todayStart.toISOString());
+
+                const seq = (count || 0) + 1;
+                const d = String(todayStart.getDate()).padStart(2, '0');
+                const m = String(todayStart.getMonth() + 1).padStart(2, '0');
+                const orderCode = `${d}-${m}-${String(seq).padStart(3, '0')}`;
+
+                // Upload files to bucket
+                for (let i = 0; i < selectedFiles.length; i++) {
+                    const file = selectedFiles[i];
+                    const randSuffix = Math.random().toString(36).substring(2, 7);
+                    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+                    const cleanName = `${Date.now()}_${i}_${randSuffix}_${safeName}`;
+
+                    const { error: upErr } = await client.storage.from('print_docs').upload(cleanName, file);
+                    if (upErr) throw upErr;
+                    fileMetadata.push({ name: file.name, path: cleanName });
+                }
+
+                const t = getType();
+                const extras = [];
+                if ($('cover').checked) extras.push("কভার পেজ");
+                if ($('spiral').checked) extras.push("স্পাইরাল বাইন্ডিং");
+                if ($('tape').checked) extras.push("টেপ বাইন্ডিং");
+
+                const photoTypeEl = document.querySelector('input[name="ptype"]:checked');
+                const photoType = photoTypeEl ? photoTypeEl.value : 'পাসপোর্ট সাইজ';
+                const sideEl = document.querySelector('input[name="side"]:checked');
+                const sideVal = sideEl ? sideEl.value : 'একপিঠ';
+
+                let printTypeLabel = t === 'photo'
+                    ? `ছবি (${photoType})`
+                    : (t === 'print_c' ? `প্রিন্ট রঙিন (${sideVal})` : `প্রিন্ট সাদা-কালো (${sideVal})`);
+
+                let pageRangeVal = "";
+                const f = $('from').value.trim(), to = $('to').value.trim();
+                if (f && to) pageRangeVal = `${f} থেকে ${to} পেজ`;
+                else if (f) pageRangeVal = `${f} থেকে শেষ পর্যন্ত`;
+                else if (to) pageRangeVal = `১ থেকে ${to} পর্যন্ত`;
+
+                const copiesVal = parseInt($('qty').value) || (t === 'photo' ? 4 : 1);
+
+                // Embed order code tag into instructions
+                let instrVal = $('instr').value.trim();
+                instrVal = instrVal ? `${instrVal}\n[অর্ডার: ${orderCode}]` : `[অর্ডার: ${orderCode}]`;
+
+                const { data: order, error: insertErr } = await client.from('orders').insert({
+                    customer_name: name,
+                    phone: phone,
+                    print_type: printTypeLabel,
+                    page_range: t === 'photo' ? '-' : (pageRangeVal || 'সব পেজ'),
+                    copies: copiesVal,
+                    binding: extras.join(', ') || 'নেই',
+                    extras: extras,
+                    side: t !== 'photo' ? sideVal : null,
+                    instructions: instrVal,
+                    files: fileMetadata,
+                    status: 'waiting'
+                }).select().single();
+
+                if (insertErr) throw insertErr;
+
+                // Save customer details in localStorage
+                localStorage.setItem('vc_cust_phone', phone);
+                localStorage.setItem('vc_cust_name', name);
+                currentCustPhone = phone;
+
+                // Reset form fields
+                selectedFiles = [];
+                $('fileInput').value = "";
+                $('filePrompt').innerText = "📄 ফাইল নির্বাচন করতে এখানে ট্যাপ করুন";
+                $('fileListDisplay').innerHTML = "";
+                $('instr').value = "";
+
+                // Switch to orders view
+                switchView('orders');
+                loadCustomerOrders(phone);
+
+            } catch (e) {
+                if (fileMetadata.length > 0) {
+                    try {
+                        await client.storage.from('print_docs').remove(fileMetadata.map(f => f.path));
+                    } catch (_) { }
+                }
+                showError("অর্ডার পাঠাতে সমস্যা হয়েছে: " + e.message);
+            } finally {
+                $('sendBtn').disabled = false;
+                $('sendBtn').innerText = "অর্ডার জমা দিন";
+            }
+        };
+
+        // Navigation Switcher between Form and Orders List
+        function switchView(view) {
+            if (view === 'orders') {
+                $('formSection').classList.add('hidden');
+                $('ordersSection').classList.remove('hidden');
+                $('sendBtn').classList.add('hidden');
+                $('newOrderBtn').classList.remove('hidden');
+
+                $('tabNewOrder').classList.remove('active');
+                $('tabMyOrders').classList.add('active');
+
+                if (currentCustPhone) {
+                    $('phoneLookupCard').classList.add('hidden');
+                    loadCustomerOrders(currentCustPhone);
+                } else {
+                    $('phoneLookupCard').classList.remove('hidden');
+                    $('customerOrdersContainer').innerHTML = `<div style="text-align: center; color: var(--muted); padding: 30px; background: var(--card); border-radius: 12px; border: 1px solid var(--line);">আপনার পূর্ববর্তী অর্ডার দেখতে উপরে মোবাইল নম্বর দিন।</div>`;
+                }
+            } else {
+                $('formSection').classList.remove('hidden');
+                $('ordersSection').classList.add('hidden');
+                $('sendBtn').classList.remove('hidden');
+                $('newOrderBtn').classList.add('hidden');
+
+                $('tabNewOrder').classList.add('active');
+                $('tabMyOrders').classList.remove('active');
+            }
+        }
+
+        function handleManualLookup() {
+            const phone = $('lookupPhoneInput').value.trim().replace(/[\s-]/g, '');
+            if (!phone || phone.length < 10) {
+                alert("দয়া করে সঠিক মোবাইল নম্বর দিন।");
+                return;
+            }
+            currentCustPhone = phone;
+            localStorage.setItem('vc_cust_phone', phone);
+            $('custPhone').value = phone;
+            loadCustomerOrders(phone);
+        }
+
+        // Fetch & render customer orders
+        async function loadCustomerOrders(phone) {
+            if (!phone) return;
+
+            subscribeToCustomerRealtime(phone);
+
+            const { data: orders, error } = await client
+                .from('orders')
+                .select('*')
+                .eq('phone', phone)
+                .order('created_at', { ascending: false });
+
+            const badge = $('ordersCountBadge');
+            const container = $('customerOrdersContainer');
+
+            if (error) {
+                container.innerHTML = `<div style="text-align:center; color:var(--warn-text); padding:20px;">অর্ডার লোড করতে সমস্যা হয়েছে: ${escapeHtml(error.message)}</div>`;
+                return;
+            }
+
+            if (!orders || orders.length === 0) {
+                badge.classList.add('hidden');
+                badge.innerText = "0";
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px 20px; background: var(--card); border-radius: 12px; border: 1px solid var(--line);">
+                        <p style="font-size: 18px; font-weight: 700; margin: 0 0 6px;">বর্তমানে কোনো পেন্ডিং অর্ডার নেই</p>
+                        <p style="color: var(--muted); font-size: 14px; margin: 0 0 16px;">নতুন অর্ডার দিতে নিচের বাটনে ট্যাপ করুন।</p>
+                        <button type="button" class="btn-main btn-secondary" style="height:44px; max-width:220px; margin:0 auto;" onclick="switchView('form')">
+                            + নতুন অর্ডার দিন
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            badge.innerText = orders.length;
+            badge.classList.remove('hidden');
+
+            container.innerHTML = orders.map((o, idx) => {
+                const isWaiting = o.status === 'waiting';
+                const isProgressing = o.status === 'progressing';
+                const isReady = o.status === 'ready';
+
+                let statusClass = "badge-waiting";
+                let statusText = "⏳ অপেক্ষারত (Waiting)";
+                let statusDesc = "দোকানদার ফাইলটি ডাউনলোড করলেই কাজ শুরু হবে।";
+
+                if (isProgressing) {
+                    statusClass = "badge-prog";
+                    statusText = "⚙️ প্রিন্ট হচ্ছে (Progressing)";
+                    statusDesc = "দোকানদার ফাইল নামিয়েছেন, আপনার প্রিন্ট তৈরি হচ্ছে।";
+                } else if (isReady) {
+                    statusClass = "badge-ready";
+                    statusText = "🎉 প্রস্তুত! নিয়ে যান (Ready)";
+                    statusDesc = "আপনার প্রিন্ট সম্পূর্ণ প্রস্তুত!";
+                }
+
+                const displayCode = getOrderCode(o);
+                const price = getOrderPrice(o);
+                const pageTxt = o.page_range && o.page_range !== '-' ? ` | ${escapeHtml(o.page_range)}` : '';
+                const sideTxt = o.side ? ` | ${escapeHtml(o.side)}` : '';
+                const bindingTxt = o.binding && o.binding !== 'নেই' ? `<div style="font-size:13px; color:var(--muted); margin-top:2px;">• বাইন্ডিং: ${escapeHtml(o.binding)}</div>` : '';
+                const cleanInstr = cleanInstructions(o.instructions);
+                const instrTxt = cleanInstr ? `<div style="font-size:13px; color:var(--warn-text); margin-top:2px;">• নির্দেশনা: ${escapeHtml(cleanInstr)}</div>` : '';
+
+                let timeStr = "";
+                try {
+                    const dt = new Date(o.created_at);
+                    timeStr = dt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                } catch (_) { }
+
+                return `
+                    <div class="order-track-card ${escapeHtml(o.status)}">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+                            <div>
+                                <span style="font-size:14px; font-weight:700; color:#0284c7; background:#e0f2fe; padding:2px 8px; border-radius:6px;">#${escapeHtml(displayCode)}</span>
+                                ${timeStr ? `<span style="font-size:12px; color:var(--muted); margin-left:6px;">(${timeStr})</span>` : ''}
+                                <div style="font-size:16px; font-weight:700; margin-top:4px;">
+                                    ${escapeHtml(o.print_type || 'প্রিন্ট')}
+                                </div>
+                            </div>
+                            <span class="status-badge ${statusClass}">${statusText}</span>
+                        </div>
+
+                        <div style="font-size:14px; line-height:1.5; color:var(--ink); margin-bottom:6px;">
+                            <strong>কপি:</strong> ${o.copies || 1} সেট${pageTxt}${sideTxt}
+                            ${bindingTxt}
+                            ${instrTxt}
+                        </div>
+
+                        <div style="font-size:13px; color:var(--muted); padding-top:4px;">
+                            ${statusDesc}
+                        </div>
+
+                        ${price ? `
+                            <div class="bill-box">
+                                <span class="bill-label">💵 প্রদেয় মোট বিল</span>
+                                <span class="bill-amount">৳ ${escapeHtml(price)}</span>
+                            </div>
+                            ${isReady ? `
+                                <div style="font-size:13px; font-weight:700; color:#15803d; margin-top:6px; text-align:center;">
+                                    কাউন্টারে এসে ৳${escapeHtml(price)} পরিশোধ করে আপনার প্রিন্ট সংগ্রহ করুন।
+                                </div>
+                            ` : ''}
+                        ` : (isReady ? `
+                            <div style="font-size:13px; font-weight:600; color:#15803d; margin-top:8px; text-align:center; background:#f0fdf4; padding:8px; border-radius:8px;">
+                                কাউন্টারে এসে আপনার নাম ও ফোন নম্বর বলে প্রিন্ট সংগ্রহ করুন।
+                            </div>
+                        ` : '')}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Realtime Subscription for this Customer's Orders
+        function subscribeToCustomerRealtime(phone) {
+            if (realtimeChannel) {
+                realtimeChannel.unsubscribe();
+            }
+
+            realtimeChannel = client.channel(`cust-channel-${phone}`)
+                .on('postgres_changes', {
+                    event: '*',
+                    schema: 'public',
+                    table: 'orders',
+                    filter: `phone=eq.${phone}`
+                }, () => {
+                    loadCustomerOrders(phone);
+                })
+                .subscribe();
+        }
+
+        // Initialize state on page load
+        (function initCustomerApp() {
+            refresh();
+
+            const savedPhone = localStorage.getItem('vc_cust_phone');
+            const savedName = localStorage.getItem('vc_cust_name');
+
+            if (savedName) $('custName').value = savedName;
+            if (savedPhone) {
+                $('custPhone').value = savedPhone;
+                currentCustPhone = savedPhone;
+                // Check if they have active orders today
+                client.from('orders').select('id').eq('phone', savedPhone).then(({ data }) => {
+                    if (data && data.length > 0) {
+                        $('ordersCountBadge').innerText = data.length;
+                        $('ordersCountBadge').classList.remove('hidden');
+                        switchView('orders');
+                    }
+                });
+            }
+        })();
+    </script>
 </body>
 
 </html>
