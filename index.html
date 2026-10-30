@@ -1,206 +1,574 @@
 <!DOCTYPE html>
 <html lang="bn">
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>ভার্সিটি কর্নার | প্রিন্ট ও ছবি অর্ডার</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;700&display=swap">
-<style>
-:root{--bg:#f2f4f7;--card:#fff;--ink:#14213d;--muted:#5b6478;--line:#d5dae3;--sel:#14213d;--seltx:#fff;--wa:#1a9d4f;--watx:#fff;--warn:#b42318;
-box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1624;--card:#18223a;--ink:#eef1f7;--muted:#9aa5bd;--line:#2c3856;--sel:#eef1f7;--seltx:#14213d;--wa:#2bbd68;--watx:#06240f;--warn:#ff8a7a}}
-:root[data-theme="dark"]{--bg:#0f1624;--card:#18223a;--ink:#eef1f7;--muted:#9aa5bd;--line:#2c3856;--sel:#eef1f7;--seltx:#14213d;--wa:#2bbd68;--watx:#06240f;--warn:#ff8a7a}
-*,*::before,*::after{box-sizing:border-box}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:"Hind Siliguri","Noto Sans Bengali","Kalpurush",system-ui,sans-serif;font-size:17px;line-height:1.5}
-main{max-width:520px;margin:0 auto;padding:20px 16px 40px}
-.shop{font-weight:500;color:var(--muted);margin:0}
-h1{font-size:clamp(30px,9vw,42px);line-height:1.15;margin:4px 0 6px;font-weight:700;letter-spacing:-.01em}
-.sub{margin:0 0 22px;color:var(--muted)}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
-.q{font-weight:700;margin:0 0 10px}
-.opt{font-weight:400;color:var(--muted);font-size:15px}
-.seg{display:grid;gap:8px}
-.seg.one{grid-template-columns:1fr}
-.seg.two{grid-template-columns:1fr 1fr}
-.seg.three{grid-template-columns:repeat(3,1fr)}
-.seg + .seg,.seg + .sp{margin-top:8px}
-.seg input{position:absolute;opacity:0;pointer-events:none}
-.seg label{display:flex;align-items:center;justify-content:center;text-align:center;min-height:52px;padding:8px;border:1.5px solid var(--line);border-radius:10px;cursor:pointer;font-weight:500}
-.seg input:checked+label{background:var(--sel);color:var(--seltx);border-color:var(--sel)}
-.seg input:focus-visible+label,#send:focus-visible,.step button:focus-visible,input[type=number]:focus-visible,input[type=text]:focus-visible,textarea:focus-visible{outline:3px solid var(--wa);outline-offset:2px}
-.row{display:flex;gap:10px;align-items:center}
-.row>*{flex:1}
-.step{display:flex;align-items:center;gap:10px}
-.step button{width:52px;height:52px;border-radius:10px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);font-size:26px;font-family:inherit;cursor:pointer}
-.step input{width:84px;height:52px;text-align:center;font-size:22px;font-weight:700;font-family:inherit}
-input[type=number],input[type=text],textarea{width:100%;border:1.5px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);padding:0 12px;font-size:17px;font-family:inherit}
-input[type=number],input[type=text]{height:52px}
-textarea{min-height:90px;padding:10px 12px;resize:vertical}
-.dash{flex:0 0 auto;color:var(--muted)}
-.hidden{display:none}
-.must{margin:18px 0 12px;padding:14px;border:2px solid var(--warn);border-radius:12px;font-weight:700;font-size:18px;color:var(--warn)}
-#send{display:flex;align-items:center;justify-content:center;text-decoration:none;width:100%;min-height:60px;border:0;border-radius:12px;background:var(--wa);color:var(--watx);font-size:20px;font-weight:700;font-family:inherit;cursor:pointer}
-#note{margin:14px 0 0;padding:14px;border-radius:12px;border:1.5px solid var(--wa);font-weight:500}
-#err{color:var(--warn);margin:0 0 10px;font-weight:500}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>ভার্সিটি কর্নার | প্রিন্ট ও ছবি অর্ডার</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --ink: #0f172a;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --primary: #0f172a;
+      --primary-tx: #ffffff;
+      --wa: #16a34a;
+      --wa-dark: #15803d;
+      --wa-tx: #ffffff;
+      --warn-bg: #fef2f2;
+      --warn-border: #fca5a5;
+      --warn-text: #b91c1c;
+      --radius: 14px;
+      --shadow: 0 2px 8px -2px rgba(15, 23, 42, 0.06);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #090d16;
+        --card: #131b2e;
+        --ink: #f1f5f9;
+        --muted: #94a3b8;
+        --line: #222f4b;
+        --primary: #f8fafc;
+        --primary-tx: #090d16;
+        --wa: #22c55e;
+        --wa-dark: #16a34a;
+        --wa-tx: #052e16;
+        --warn-bg: #2d1215;
+        --warn-border: #7f1d1d;
+        --warn-text: #fca5a5;
+        --shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+      }
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Hind Siliguri", system-ui, -apple-system, sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+      padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px));
+    }
+
+    main {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 18px 16px;
+    }
+
+    .header {
+      margin-bottom: 20px;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: .02em;
+      margin-bottom: 4px;
+    }
+
+    h1 {
+      font-size: clamp(26px, 7.5vw, 32px);
+      line-height: 1.2;
+      margin: 0 0 6px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .sub {
+      margin: 0;
+      font-size: 15px;
+      color: var(--muted);
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow);
+      transition: border-color .15s ease;
+    }
+
+    .q {
+      font-weight: 700;
+      font-size: 16px;
+      margin: 0 0 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .opt {
+      font-weight: 400;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* Grid segments */
+    .seg {
+      display: grid;
+      gap: 8px;
+    }
+
+    .seg.one { grid-template-columns: 1fr; }
+    .seg.two { grid-template-columns: repeat(2, 1fr); }
+    .seg.three { grid-template-columns: repeat(3, 1fr); }
+    .seg + .seg { margin-top: 8px; }
+
+    .seg input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .seg label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      min-height: 48px;
+      padding: 10px 8px;
+      border: 1.5px solid var(--line);
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 15px;
+      background: var(--card);
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+
+    .seg label:active {
+      transform: scale(0.98);
+    }
+
+    .seg input:checked + label {
+      background: var(--primary);
+      color: var(--primary-tx);
+      border-color: var(--primary);
+    }
+
+    /* Number & Range inputs */
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .row > * {
+      flex: 1;
+    }
+
+    .dash {
+      flex: 0 0 auto;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    input[type=number],
+    input[type=text],
+    textarea {
+      width: 100%;
+      border: 1.5px solid var(--line);
+      border-radius: 10px;
+      background: var(--card);
+      color: var(--ink);
+      font-size: 16px;
+      font-family: inherit;
+      padding: 0 12px;
+      transition: border-color .15s ease;
+    }
+
+    input[type=number],
+    input[type=text] {
+      height: 48px;
+    }
+
+    textarea {
+      min-height: 80px;
+      padding: 10px 12px;
+      resize: vertical;
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--wa);
+    }
+
+    /* Stepper Counter */
+    .step {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .step button {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      border: 1.5px solid var(--line);
+      background: var(--card);
+      color: var(--ink);
+      font-size: 24px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .12s ease;
+    }
+
+    .step button:active {
+      transform: scale(0.95);
+      background: var(--bg);
+    }
+
+    .step input {
+      width: 78px;
+      height: 48px;
+      text-align: center;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    /* Notice Boxes */
+    .must {
+      margin: 14px 0;
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: var(--warn-bg);
+      border: 1px solid var(--warn-border);
+      color: var(--warn-text);
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    #err {
+      color: var(--warn-text);
+      background: var(--warn-bg);
+      border: 1px solid var(--warn-border);
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    #note {
+      margin: 12px 0 0;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid var(--wa);
+      background: rgba(22, 163, 74, 0.08);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Fixed Sticky Footer on Mobile */
+    .sticky-footer {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--card);
+      border-top: 1px solid var(--line);
+      padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px));
+      z-index: 50;
+      box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.06);
+    }
+
+    .footer-inner {
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    #send {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+      width: 100%;
+      height: 52px;
+      border-radius: 12px;
+      background: var(--wa);
+      color: var(--wa-tx);
+      font-size: 18px;
+      font-weight: 700;
+      border: 0;
+      cursor: pointer;
+      transition: background .15s ease, transform .1s ease;
+    }
+
+    #send:active {
+      transform: scale(0.98);
+      background: var(--wa-dark);
+    }
+
+    #send svg {
+      width: 22px;
+      height: 22px;
+      fill: currentColor;
+    }
+  </style>
 </head>
+
 <body>
-<main>
-<p class="shop">ভার্সিটি কর্নার</p>
-<h1>দাঁড়িয়ে থেকে অপেক্ষা আর নয়</h1>
-<p class="sub">নিচের তথ্য দিন, তারপর পাঠিয়ে দিন। আপনার কাজ রেডি হতে থাকবে।</p>
+  <main>
+    <div class="header">
+      <span class="badge">ভার্সিটি কর্নার</span>
+      <h1>দাঁড়িয়ে অপেক্ষা আর নয়</h1>
+      <p class="sub">তথ্য পূরণ করে বোতাম চাপুন। আপনার কাজ শুরু হয়ে যাবে।</p>
+    </div>
 
-<div class="card">
-<p class="q">কী লাগবে?</p>
-<div class="seg three">
-<span><input type="radio" name="type" id="t1" value="print_c"><label for="t1">প্রিন্ট (রঙিন)</label></span>
-<span><input type="radio" name="type" id="t2" value="print_bw"><label for="t2">প্রিন্ট (সাদা কালো)</label></span>
-<span><input type="radio" name="type" id="t3" value="photo"><label for="t3">ছবি</label></span>
-</div>
-</div>
+    <div class="card">
+      <p class="q">কী প্রিন্ট করতে চান?</p>
+      <div class="seg three">
+        <span><input type="radio" name="type" id="t1" value="print_c"><label for="t1">রঙিন</label></span>
+        <span><input type="radio" name="type" id="t2" value="print_bw"><label for="t2">সাদা-কালো</label></span>
+        <span><input type="radio" name="type" id="t3" value="photo"><label for="t3">ছবি</label></span>
+      </div>
+    </div>
 
-<div class="card hidden" id="photoBox">
-<p class="q">কোন ধরনের ছবি?</p>
-<div class="seg two">
-<span><input type="radio" name="ptype" id="p1" value="পাসপোর্ট সাইজ" checked><label for="p1">পাসপোর্ট</label></span>
-<span><input type="radio" name="ptype" id="p2" value="স্ট্যাম্প সাইজ"><label for="p2">স্ট্যাম্প</label></span>
-</div>
-</div>
+    <div class="card hidden" id="photoBox">
+      <p class="q">ছবির সাইজ নির্বাচন করুন</p>
+      <div class="seg two">
+        <span><input type="radio" name="ptype" id="p1" value="পাসপোর্ট সাইজ" checked><label for="p1">পাসপোর্ট সাইজ</label></span>
+        <span><input type="radio" name="ptype" id="p2" value="স্ট্যাম্প সাইজ"><label for="p2">স্ট্যাম্প সাইজ</label></span>
+      </div>
+    </div>
 
-<div class="card hidden" id="sideBox">
-<p class="q">কোন পিঠে?</p>
-<div class="seg two">
-<span><input type="radio" name="side" id="s1" value="একপিঠ" checked><label for="s1">একপিঠ</label></span>
-<span><input type="radio" name="side" id="s2" value="এপিঠ ওপিঠ"><label for="s2">এপিঠ ওপিঠ</label></span>
-</div>
-</div>
+    <div class="card hidden" id="sideBox">
+      <p class="q">প্রিন্টের পিঠ</p>
+      <div class="seg two">
+        <span><input type="radio" name="side" id="s1" value="একপিঠ" checked><label for="s1">একপিঠ</label></span>
+        <span><input type="radio" name="side" id="s2" value="এপিঠ ওপিঠ"><label for="s2">এপিঠ ওপিঠ</label></span>
+      </div>
+    </div>
 
-<div class="card hidden" id="rangeBox">
-<p class="q">কত থেকে কত পেজ? <span class="opt">(ঐচ্ছিক, খালি রাখলে সব পেজ)</span></p>
-<div class="row">
-<input type="number" id="from" inputmode="numeric" min="1" placeholder="শুরু" aria-label="শুরুর পেজ">
-<span class="dash">থেকে</span>
-<input type="number" id="to" inputmode="numeric" min="1" placeholder="শেষ" aria-label="শেষ পেজ">
-</div>
-</div>
+    <div class="card hidden" id="rangeBox">
+      <p class="q">পেজ রেঞ্জ <span class="opt">(খালি রাখলে সব পেজ)</span></p>
+      <div class="row">
+        <input type="number" id="from" inputmode="numeric" min="1" placeholder="শুরু" aria-label="শুরুর পেজ">
+        <span class="dash">থেকে</span>
+        <input type="number" id="to" inputmode="numeric" min="1" placeholder="শেষ" aria-label="শেষ পেজ">
+      </div>
+    </div>
 
-<div class="card hidden" id="qtyBox">
-<p class="q" id="qtyLabel">কত সেট?</p>
-<div class="step">
-<button type="button" id="minus" aria-label="কমান">−</button>
-<input type="number" id="qty" inputmode="numeric" min="1" value="1" aria-label="সংখ্যা">
-<button type="button" id="plus" aria-label="বাড়ান">+</button>
-</div>
-</div>
+    <div class="card hidden" id="qtyBox">
+      <p class="q" id="qtyLabel">কত সেট?</p>
+      <div class="step">
+        <button type="button" id="minus" aria-label="কমান">−</button>
+        <input type="number" id="qty" inputmode="numeric" min="1" value="1" aria-label="সংখ্যা">
+        <button type="button" id="plus" aria-label="বাড়ান">+</button>
+      </div>
+    </div>
 
-<div class="card hidden" id="extraBox">
-<p class="q">অতিরিক্ত কিছু লাগবে? <span class="opt">(ঐচ্ছিক, টিক দিন)</span></p>
-<div class="seg one">
-<span><input type="checkbox" id="cover"><label for="cover">অ্যাসাইনমেন্ট কভার পেজ লাগিয়ে দিন</label></span>
-</div>
-<div class="seg two">
-<span><input type="checkbox" id="spiral"><label for="spiral">স্পাইরাল বাইন্ডিং করুন</label></span>
-<span><input type="checkbox" id="tape"><label for="tape">টেপ বাইন্ডিং করুন</label></span>
-</div>
-</div>
+    <div class="card hidden" id="extraBox">
+      <p class="q">অতিরিক্ত সেবা <span class="opt">(ঐচ্ছিক)</span></p>
+      <div class="seg one">
+        <span><input type="checkbox" id="cover"><label for="cover">অ্যাসাইনমেন্ট কভার পেজ যুক্ত করুন</label></span>
+      </div>
+      <div class="seg two">
+        <span><input type="checkbox" id="spiral"><label for="spiral">স্পাইরাল বাইন্ডিং</label></span>
+        <span><input type="checkbox" id="tape"><label for="tape">টেপ বাইন্ডিং</label></span>
+      </div>
+    </div>
 
-<div class="card hidden" id="instrBox">
-<p class="q">আলাদা কোনো নির্দেশনা? <span class="opt">(ঐচ্ছিক)</span></p>
-<textarea id="instr" placeholder="যেমন: প্রথম পেজ কালার, বাকি সব সাদা কালো"></textarea>
-</div>
+    <div class="card hidden" id="instrBox">
+      <p class="q">বিশেষ কোনো নির্দেশনা? <span class="opt">(ঐচ্ছিক)</span></p>
+      <textarea id="instr" placeholder="যেমন: প্রথম পেজ রঙিন, বাকি সব সাদা-কালো..."></textarea>
+    </div>
 
-<div class="card hidden" id="nameBox">
-<p class="q">আপনার নাম <span class="opt">(ঐচ্ছিক)</span></p>
-<input type="text" id="name" placeholder="নাম লিখুন" autocomplete="name">
-</div>
+    <div class="card hidden" id="nameBox">
+      <p class="q">আপনার নাম <span class="opt">(ঐচ্ছিক)</span></p>
+      <input type="text" id="name" placeholder="নাম লিখুন" autocomplete="name">
+    </div>
 
-<p id="err" class="hidden">আগে বেছে নিন: প্রিন্ট (রঙিন), প্রিন্ট (সাদা কালো), না ছবি।</p>
-<p class="must">ফর্ম পূরণ করে অবশ্যই ফাইল পাঠাবেন। ফাইল না পেলে কাজ শুরু করা যাবে না।</p>
-<a id="send" href="#" target="_blank" rel="noopener noreferrer">WhatsApp এ পাঠান</a>
-<p id="note" class="hidden"></p>
-</main>
+    <div class="must">
+      ⚠️ তথ্য পাঠানোর পর ফাইলটি অবশ্যই হোয়াটসঅ্যাপে সেন্ড করতে হবে। ফাইল ছাড়া কাজ শুরু হবে না।
+    </div>
 
-<script>
-(function(){
-var SHOP="8801734700329";
-var $=function(i){return document.getElementById(i)};
-var bn=function(n){try{return Number(n).toLocaleString("bn-BD",{useGrouping:false})}catch(e){return String(n)}};
-function type(){var c=document.querySelector('input[name="type"]:checked');return c?c.value:null}
-function isPrint(t){return t==="print_c"||t==="print_bw"}
-function min(){return type()==="photo"?4:1}
-function qty(){var v=parseInt($("qty").value,10);return isNaN(v)||v<min()?min():v}
-function show(id,on){$(id).classList.toggle("hidden",!on)}
-function refresh(){
-var t=type();
-show("photoBox",t==="photo");
-show("sideBox",t==="print_bw");
-show("rangeBox",isPrint(t));
-show("extraBox",isPrint(t));
-show("qtyBox",!!t);
-show("instrBox",!!t);
-show("nameBox",!!t);
-$("qtyLabel").textContent=t==="photo"?"কত কপি ছবি? (সর্বনিম্ন ৪ কপি)":"কত সেট?";
-$("qty").min=min();
-if(t)$("err").classList.add("hidden");
-}
-document.querySelectorAll('input[name="type"]').forEach(function(r){
-r.addEventListener("change",function(){$("qty").value=min();refresh()});
-});
-$("spiral").addEventListener("change",function(){if(this.checked)$("tape").checked=false});
-$("tape").addEventListener("change",function(){if(this.checked)$("spiral").checked=false});
-$("minus").onclick=function(){$("qty").value=Math.max(min(),qty()-1)};
-$("plus").onclick=function(){$("qty").value=qty()+1};
-$("qty").addEventListener("blur",function(){$("qty").value=qty()});
-function build(){
-var t=type();
-if(!t)return null;
-var L=[];
-var nm=$("name").value.trim();
-if(nm){L.push("👤 *নাম:* "+nm);L.push("")}
-L.push("🏪 *ভার্সিটি কর্নার | নতুন অর্ডার*");
-L.push("");
-if(t==="photo"){
-L.push("📸 *ধরন:* ছবি ("+document.querySelector('input[name="ptype"]:checked').value+")");
-L.push("🔢 *কপি:* "+bn(qty()));
-}else{
-L.push(t==="print_c"?"🎨 *ধরন:* প্রিন্ট (রঙিন)":"🖨️ *ধরন:* প্রিন্ট (সাদা কালো)");
-if(t==="print_bw")L.push("📄 *পিঠ:* "+document.querySelector('input[name="side"]:checked').value);
-var f=parseInt($("from").value,10),e=parseInt($("to").value,10);
-var r="সব পেজ";
-if(f&&e)r=bn(f)+" থেকে "+bn(e)+" পেজ";
-else if(f)r=bn(f)+" নম্বর পেজ থেকে শেষ পর্যন্ত";
-else if(e)r="শুরু থেকে "+bn(e)+" নম্বর পেজ পর্যন্ত";
-L.push("📑 *পেজ:* "+r);
-L.push("🔢 *সেট:* "+bn(qty()));
-var ex=[];
-if($("cover").checked)ex.push("✅ অ্যাসাইনমেন্ট কভার পেজ");
-if($("spiral").checked)ex.push("✅ স্পাইরাল বাইন্ডিং");
-if($("tape").checked)ex.push("✅ টেপ বাইন্ডিং");
-if(ex.length){L.push("");L.push("➕ *অতিরিক্ত:*");ex.forEach(function(x){L.push(x)})}
-}
-var ins=$("instr").value.trim();
-if(ins){L.push("");L.push("📝 *নির্দেশনা:* "+ins)}
-L.push("");
-L.push("📎 *ফাইল এখনই এই চ্যাটে পাঠাচ্ছি।*");
-return "https://wa.me/"+SHOP+"?text="+encodeURIComponent(L.join("\n"));
-}
-function upd(){var u=build();$("send").href=u||"#"}
-["input","change","click"].forEach(function(n){
-document.addEventListener(n,function(ev){if(ev.target.id!=="send")setTimeout(upd,0)});
-});
-$("send").addEventListener("pointerdown",upd);
-$("send").onclick=function(ev){
-var u=build();
-if(!u){ev.preventDefault();$("err").classList.remove("hidden");return}
-$("send").href=u;
-var n=$("note");
-n.textContent="মেসেজ পাঠানোর পর এখন ফাইলটি একই চ্যাটে অবশ্যই পাঠান।";
-n.classList.remove("hidden");
-};
-refresh();
-upd();
-})();
-</script>
+    <p id="err" class="hidden">অনুগ্রহ করে আগে কী প্রিন্ট করবেন তা নির্বাচন করুন।</p>
+    <p id="note" class="hidden"></p>
+  </main>
+
+  <div class="sticky-footer">
+    <div class="footer-inner">
+      <a id="send" href="#" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24">
+          <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm.01 18.04c-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.167 8.167 0 0 1-1.25-4.27c0-4.52 3.68-8.2 8.2-8.2 2.19 0 4.25.85 5.8 2.4 1.55 1.55 2.41 3.61 2.4 5.8 0 4.52-3.68 8.13-8.16 8.13zm4.49-6.13c-.25-.12-1.47-.72-1.7-.81-.23-.08-.39-.12-.56.12-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-2-1.23-.74-.66-1.24-1.47-1.39-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.12-.14.17-.25.25-.41.08-.17.04-.31-.02-.43s-.56-1.34-.76-1.84c-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.12.17 1.78 2.71 4.3 3.8.6.26 1.07.41 1.44.53.61.19 1.16.17 1.6.1 1.4-.08 1.47-.72 1.7-.81z"/>
+        </svg>
+        <span>WhatsApp-এ অর্ডার পাঠান</span>
+      </a>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var SHOP = "8801734700329";
+      var $ = function (id) { return document.getElementById(id); };
+      var bn = function (n) {
+        try { return Number(n).toLocaleString("bn-BD", { useGrouping: false }); }
+        catch (e) { return String(n); }
+      };
+
+      function type() {
+        var c = document.querySelector('input[name="type"]:checked');
+        return c ? c.value : null;
+      }
+      function isPrint(t) { return t === "print_c" || t === "print_bw"; }
+      function min() { return type() === "photo" ? 4 : 1; }
+      function qty() {
+        var v = parseInt($("qty").value, 10);
+        return isNaN(v) || v < min() ? min() : v;
+      }
+      function show(id, on) {
+        $(id).classList.toggle("hidden", !on);
+      }
+
+      function refresh() {
+        var t = type();
+        show("photoBox", t === "photo");
+        show("sideBox", t === "print_bw");
+        show("rangeBox", isPrint(t));
+        show("extraBox", isPrint(t));
+        show("qtyBox", !!t);
+        show("instrBox", !!t);
+        show("nameBox", !!t);
+
+        $("qtyLabel").textContent = t === "photo" ? "কত কপি ছবি? (কমপক্ষে ৪ কপি)" : "কত সেট?";
+        $("qty").min = min();
+        if (t) $("err").classList.add("hidden");
+      }
+
+      document.querySelectorAll('input[name="type"]').forEach(function (r) {
+        r.addEventListener("change", function () {
+          $("qty").value = min();
+          refresh();
+        });
+      });
+
+      $("spiral").addEventListener("change", function () {
+        if (this.checked) $("tape").checked = false;
+      });
+      $("tape").addEventListener("change", function () {
+        if (this.checked) $("spiral").checked = false;
+      });
+
+      $("minus").onclick = function () {
+        $("qty").value = Math.max(min(), qty() - 1);
+        upd();
+      };
+      $("plus").onclick = function () {
+        $("qty").value = qty() + 1;
+        upd();
+      };
+      $("qty").addEventListener("blur", function () {
+        $("qty").value = qty();
+        upd();
+      });
+
+      function build() {
+        var t = type();
+        if (!t) return null;
+
+        var L = [];
+        var nm = $("name").value.trim();
+        if (nm) { L.push("*নাম:* " + nm); L.push(""); }
+        L.push("*ভার্সিটি কর্নার | নতুন অর্ডার*");
+        L.push("");
+
+        if (t === "photo") {
+          L.push("• *ধরন:* ছবি (" + document.querySelector('input[name="ptype"]:checked').value + ")");
+          L.push("• *পরিমাণ:* " + bn(qty()) + " কপি");
+        } else {
+          L.push(t === "print_c" ? "• *ধরন:* প্রিন্ট (রঙিন)" : "• *ধরন:* প্রিন্ট (সাদা-কালো)");
+          if (t === "print_bw") {
+            L.push("• *পিঠ:* " + document.querySelector('input[name="side"]:checked').value);
+          }
+          var f = parseInt($("from").value, 10), e = parseInt($("to").value, 10);
+          var r = "সব পেজ";
+          if (f && e) r = bn(f) + " থেকে " + bn(e) + " পেজ";
+          else if (f) r = bn(f) + " নম্বর পেজ থেকে শেষ পর্যন্ত";
+          else if (e) r = "শুরু থেকে " + bn(e) + " নম্বর পেজ পর্যন্ত";
+
+          L.push("• *পেজ:* " + r);
+          L.push("• *সেট:* " + bn(qty()) + " সেট");
+
+          var ex = [];
+          if ($("cover").checked) ex.push("অ্যাসাইনমেন্ট কভার পেজ");
+          if ($("spiral").checked) ex.push("স্পাইরাল বাইন্ডিং");
+          if ($("tape").checked) ex.push("টেপ বাইন্ডিং");
+          if (ex.length) {
+            L.push("");
+            L.push("• *অতিরিক্ত:* " + ex.join(", "));
+          }
+        }
+
+        var ins = $("instr").value.trim();
+        if (ins) {
+          L.push("");
+          L.push("• *বিশেষ নির্দেশনা:* " + ins);
+        }
+
+        L.push("");
+        L.push("📎 *ফাইল এই চ্যাটেই এখনই এটাচ করে দিচ্ছি।*");
+
+        return "https://wa.me/" + SHOP + "?text=" + encodeURIComponent(L.join("\n"));
+      }
+
+      function upd() {
+        var u = build();
+        $("send").href = u || "#";
+      }
+
+      ["input", "change"].forEach(function (n) {
+        document.addEventListener(n, function (ev) {
+          if (ev.target.id !== "send") setTimeout(upd, 0);
+        });
+      });
+
+      $("send").onclick = function (ev) {
+        var u = build();
+        if (!u) {
+          ev.preventDefault();
+          $("err").classList.remove("hidden");
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          return;
+        }
+        $("send").href = u;
+        var n = $("note");
+        n.textContent = "WhatsApp খোলার পর ফাইলটি একই চ্যাটে পাঠাতে ভুলবেন না।";
+        n.classList.remove("hidden");
+      };
+
+      refresh();
+      upd();
+    })();
+  </script>
 </body>
+
 </html>
